@@ -133,7 +133,7 @@ export function NewEntryPage() {
     <div className="mx-auto max-w-3xl">
       <PageHeader
         title="Record Entry"
-        description="Tap a category to record the visitor — the system applies the current price automatically."
+        description="Tap a category to record the visitor — the current price is applied automatically."
       />
 
       {loading && <LoadingSpinner label="Loading entry options..." />}

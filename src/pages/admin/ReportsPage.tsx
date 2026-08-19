@@ -90,7 +90,7 @@ export function AdminReportsPage() {
     <div>
       <PageHeader
         title="Reports"
-        description="Financial and operational reports calculated from the database"
+        description="Revenue, entrances and agent performance"
       />
 
       <div className="-mx-4 mb-4 flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 sm:pb-0">

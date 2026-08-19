@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import {
-  Calendar,
   CircleDollarSign,
   DoorOpen,
   UserCheck,
@@ -191,11 +190,6 @@ export function AdminDashboardPage() {
               <p className="mt-1 text-2xl font-bold text-violet-700">{entries.womenChildren}</p>
             </div>
           </div>
-
-          <p className="flex items-center gap-1 text-xs text-slate-400">
-            <Calendar className="h-3.5 w-3.5" aria-hidden /> All figures are calculated from entrance
-            records stored in the database.
-          </p>
         </div>
       )}
     </div>

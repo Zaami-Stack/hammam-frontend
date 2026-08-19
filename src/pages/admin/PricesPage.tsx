@@ -50,7 +50,7 @@ export function AdminPricesPage() {
     <div>
       <PageHeader
         title="Price Management"
-        description="Prices apply to new entrances only — existing records keep their historical price."
+        description="A price change only affects new entrances."
       />
 
       <Card padding={false}>
@@ -72,8 +72,8 @@ export function AdminPricesPage() {
       </Card>
 
       <p className="mt-4 text-xs text-slate-500">
-        Changing a price only affects future entrances. Historical financial records are never
-        modified.
+        Changing a price only affects future entrances. Past entrances keep the price they
+        were paid.
       </p>
 
       <PriceModal
