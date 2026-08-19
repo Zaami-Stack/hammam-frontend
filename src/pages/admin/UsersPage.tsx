@@ -3,7 +3,7 @@ import { KeyRound, Pencil, Plus, Search, ShieldCheck, ShieldOff, UserPlus } from
 import { useAsync } from '../../hooks/useAsync';
 import { useForm } from '../../hooks/useForm';
 import { usersService, type CreateUserInput, type UpdateUserInput } from '../../services/users.service';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../hooks/useToast';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Card } from '../../components/ui/Card';
 import { DataTable, type Column } from '../../components/ui/DataTable';

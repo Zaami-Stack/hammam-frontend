@@ -1,17 +1,37 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { AppLayout } from './layouts/AppLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
-import { AdminDashboardPage } from './pages/admin/DashboardPage';
-import { AdminEntriesPage } from './pages/admin/EntriesPage';
-import { AdminUsersPage } from './pages/admin/UsersPage';
-import { AdminPricesPage } from './pages/admin/PricesPage';
-import { AdminReportsPage } from './pages/admin/ReportsPage';
-import { ReceptionDashboardPage } from './pages/reception/DashboardPage';
-import { NewEntryPage } from './pages/reception/NewEntryPage';
-import { MyEntriesPage } from './pages/reception/MyEntriesPage';
+import { LoadingSpinner } from './components/ui/LoadingSpinner';
+import { useAuth } from './hooks/useAuth';
+
+const AdminDashboardPage = lazy(() =>
+  import('./pages/admin/DashboardPage').then((m) => ({ default: m.AdminDashboardPage }))
+);
+const AdminEntriesPage = lazy(() =>
+  import('./pages/admin/EntriesPage').then((m) => ({ default: m.AdminEntriesPage }))
+);
+const AdminUsersPage = lazy(() =>
+  import('./pages/admin/UsersPage').then((m) => ({ default: m.AdminUsersPage }))
+);
+const AdminPricesPage = lazy(() =>
+  import('./pages/admin/PricesPage').then((m) => ({ default: m.AdminPricesPage }))
+);
+const AdminReportsPage = lazy(() =>
+  import('./pages/admin/ReportsPage').then((m) => ({ default: m.AdminReportsPage }))
+);
+const ReceptionDashboardPage = lazy(() =>
+  import('./pages/reception/DashboardPage').then((m) => ({ default: m.ReceptionDashboardPage }))
+);
+const NewEntryPage = lazy(() =>
+  import('./pages/reception/NewEntryPage').then((m) => ({ default: m.NewEntryPage }))
+);
+const MyEntriesPage = lazy(() =>
+  import('./pages/reception/MyEntriesPage').then((m) => ({ default: m.MyEntriesPage }))
+);
 
 function RootRedirect() {
   const { user, loading } = useAuth();
@@ -57,12 +77,22 @@ function AppRoutes() {
   );
 }
 
+function RouteFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <LoadingSpinner label="Loading page..." />
+    </div>
+  );
+}
+
 export function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
         <AuthProvider>
-          <AppRoutes />
+          <Suspense fallback={<RouteFallback />}>
+            <AppRoutes />
+          </Suspense>
         </AuthProvider>
       </ToastProvider>
     </BrowserRouter>

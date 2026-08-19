@@ -3,7 +3,7 @@ import { CheckCircle2, Loader2, RefreshCw, UserRound, UserRoundCheck } from 'luc
 import { useAsync } from '../../hooks/useAsync';
 import { entriesService } from '../../services/entries.service';
 import { metaService, pricesService } from '../../services/prices.service';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../hooks/useToast';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Button } from '../../components/ui/Button';
 import { ErrorMessage } from '../../components/ui/ErrorMessage';

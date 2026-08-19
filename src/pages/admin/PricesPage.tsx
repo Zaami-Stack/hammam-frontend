@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pencil, Tag } from 'lucide-react';
 import { useAsync } from '../../hooks/useAsync';
 import { pricesService } from '../../services/prices.service';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../hooks/useToast';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Card } from '../../components/ui/Card';
 import { DataTable, type Column } from '../../components/ui/DataTable';

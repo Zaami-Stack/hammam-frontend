@@ -13,8 +13,8 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 import { cn } from '../utils/cn';
 import { initials } from '../utils/format';
 import { Button } from '../components/ui/Button';
