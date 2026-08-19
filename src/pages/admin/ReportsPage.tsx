@@ -93,13 +93,13 @@ export function AdminReportsPage() {
         description="Financial and operational reports calculated from the database"
       />
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+      <div className="-mx-4 mb-4 flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 sm:pb-0">
         {tabs.map((item) => (
           <button
             key={item.value}
             type="button"
             onClick={() => setTab(item.value)}
-            className={`h-9 rounded-lg border px-4 text-sm font-medium transition-colors ${
+            className={`h-9 shrink-0 rounded-lg border px-4 text-sm font-medium transition-colors ${
               tab === item.value
                 ? 'border-teal-700 bg-teal-700 text-white'
                 : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'

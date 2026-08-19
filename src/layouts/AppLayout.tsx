@@ -11,6 +11,7 @@ import {
   Tags,
   Users,
   X,
+  Droplets,
   type LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -49,9 +50,7 @@ function BrandMark({ className }: { className?: string }) {
         className
       )}
     >
-      <span aria-hidden className="leading-none">
-        ♨
-      </span>
+      <Droplets aria-hidden className="h-5 w-5" />
     </div>
   );
 }
@@ -176,7 +175,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
-            className="rounded-xl border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition-colors hover:bg-slate-50 lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-colors hover:bg-slate-50 lg:hidden"
             aria-label="Open menu"
           >
             <Menu className="h-4.5 w-4.5" />

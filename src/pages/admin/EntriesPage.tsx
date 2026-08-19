@@ -161,10 +161,10 @@ export function AdminEntriesPage() {
 
       <Card className="mb-4" padding={false}>
         <div className="flex flex-wrap items-end gap-3 p-4">
-          <div className="flex w-full flex-wrap items-center gap-2">
+          <div className="flex w-full items-center gap-2">
             <Filter className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
-            <span className="text-sm font-semibold text-slate-700">Filters</span>
-            <div className="flex flex-wrap gap-1.5">
+            <span className="shrink-0 text-sm font-semibold text-slate-700">Filters</span>
+            <div className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1">
               {periodPresets.map((preset) => (
                 <button
                   key={preset.value}
@@ -172,7 +172,7 @@ export function AdminEntriesPage() {
                   onClick={() => applyFilter({ period: preset.value })}
                   aria-pressed={filters.period === preset.value}
                   className={cn(
-                    'rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors',
+                    'shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors',
                     filters.period === preset.value
                       ? 'border-teal-600 bg-teal-600 text-white shadow-sm'
                       : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'

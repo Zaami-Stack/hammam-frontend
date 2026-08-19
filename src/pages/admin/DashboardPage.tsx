@@ -77,14 +77,14 @@ export function AdminDashboardPage() {
         }
       />
 
-      <div className="mb-5 flex flex-wrap items-center gap-2">
+      <div className="-mx-4 mb-5 flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 sm:pb-0">
         {periodOptions.map((option) => (
           <button
             key={option.value}
             type="button"
             onClick={() => setPeriod(option.value)}
             className={cn(
-              'h-9 rounded-lg border px-3 text-sm font-medium transition-colors',
+              'h-9 shrink-0 rounded-lg border px-3 text-sm font-medium transition-colors',
               selection.period === option.value
                 ? 'border-teal-700 bg-teal-700 text-white'
                 : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'

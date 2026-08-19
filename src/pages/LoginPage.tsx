@@ -3,10 +3,9 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import {
   BarChart3,
   DoorOpen,
+  Droplets,
   Eye,
   EyeOff,
-  Lock,
-  Mail,
   ReceiptText,
   Sparkles,
   Users,
@@ -71,8 +70,8 @@ export function LoginPage() {
         </div>
 
         <div className="relative flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-2xl text-white shadow-lg shadow-teal-950/40">
-            ♨
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white shadow-lg shadow-teal-950/40">
+            <Droplets aria-hidden className="h-6 w-6" />
           </div>
           <div>
             <p className="font-display text-lg font-extrabold text-white">Hammam Manager</p>
@@ -121,8 +120,8 @@ export function LoginPage() {
 
         <div className="animate-fade-up relative w-full max-w-sm">
           <div className="mb-8 flex flex-col items-start">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-teal-800 text-2xl text-white shadow-lg shadow-teal-800/25">
-              ♨
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-teal-800 text-white shadow-lg shadow-teal-800/25">
+              <Droplets aria-hidden className="h-6 w-6" />
             </div>
             <h2 className="font-display mt-5 text-2xl font-extrabold tracking-tight text-slate-900">
               Welcome back
@@ -131,31 +130,26 @@ export function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Email address"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              required
+            />
             <div className="relative">
-              <Mail className="pointer-events-none absolute left-3.5 top-2.5 h-4.5 w-4.5 text-slate-400" aria-hidden />
-              <Input
-                label="Email address"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="you@example.com"
-                className="pl-10"
-                required
-              />
-            </div>
-            <div className="relative">
-              <Lock className="pointer-events-none absolute left-3.5 top-2.5 h-4.5 w-4.5 text-slate-400" aria-hidden />
-              <Input
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="••••••••"
-                className="pl-10 pr-10"
-                required
-              />
+            <Input
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="••••••••"
+              className="pr-10"
+              required
+            />
               <button
                 type="button"
                 onClick={() => setShowPassword((value) => !value)}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Loader2, RefreshCw, UserRound, UserRoundCheck } from 'lucide-react';
+import { CheckCircle2, Droplets, Loader2, RefreshCw, UserRound, UserRoundCheck } from 'lucide-react';
 import { useAsync } from '../../hooks/useAsync';
 import { entriesService } from '../../services/entries.service';
 import { metaService, pricesService } from '../../services/prices.service';
@@ -270,8 +270,8 @@ export function NewEntryPage() {
           >
             <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 text-lg text-white shadow-sm">
-                  ♨
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 text-white shadow-sm">
+                  <Droplets aria-hidden className="h-5 w-5" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-slate-700">
