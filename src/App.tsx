@@ -35,6 +35,7 @@ function AppRoutes() {
         <Route path="/admin" element={<AppLayout />}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="new-entry" element={<NewEntryPage />} />
           <Route path="entries" element={<AdminEntriesPage />} />
           <Route path="users" element={<AdminUsersPage />} />
           <Route path="prices" element={<AdminPricesPage />} />

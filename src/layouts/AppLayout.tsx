@@ -28,6 +28,7 @@ interface NavItem {
 
 const adminNav: NavItem[] = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/admin/new-entry', label: 'New Entrance', icon: PlusCircle },
   { to: '/admin/entries', label: 'Entrances', icon: DoorOpen },
   { to: '/admin/users', label: 'Users', icon: Users },
   { to: '/admin/prices', label: 'Prices', icon: Tags },
@@ -130,6 +131,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
 
   const pageLabel: Record<string, string> = {
     '/admin/dashboard': 'Dashboard',
+    '/admin/new-entry': 'New Entrance',
     '/admin/entries': 'Entrances',
     '/admin/users': 'Users',
     '/admin/prices': 'Prices',
