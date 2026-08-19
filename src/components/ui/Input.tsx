@@ -1,4 +1,4 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -23,10 +23,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         ref={ref}
         id={inputId}
         className={cn(
-          'h-10 w-full rounded-lg border bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-2',
+          'h-10 w-full rounded-xl border bg-white px-3.5 text-sm text-slate-900 shadow-sm shadow-slate-900/[0.03] placeholder:text-slate-400 transition-all focus:outline-none focus:ring-4',
           error
-            ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
-            : 'border-slate-300 focus:border-teal-600 focus:ring-teal-100',
+            ? 'border-red-400 focus:border-red-500 focus:ring-red-500/15'
+            : 'border-slate-200 hover:border-slate-300 focus:border-teal-600 focus:ring-teal-600/15',
           className
         )}
         {...props}
@@ -40,7 +40,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   );
 });
 
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
   children: ReactNode;
@@ -62,7 +62,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
         ref={ref}
         id={selectId}
         className={cn(
-          'h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:border-teal-600 focus:ring-teal-100',
+          'h-10 w-full cursor-pointer rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-sm shadow-slate-900/[0.03] transition-all hover:border-slate-300 focus:border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-600/15',
           className
         )}
         {...props}

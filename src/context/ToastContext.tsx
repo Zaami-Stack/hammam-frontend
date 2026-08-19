@@ -47,27 +47,23 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="pointer-events-none fixed z-50 bottom-4 right-4 flex w-80 flex-col gap-2">
+      <div className="pointer-events-none fixed right-4 top-4 z-[60] flex w-[min(20rem,calc(100vw-2rem))] flex-col gap-2">
         {toasts.map((toast) => (
           <div
             key={toast.id}
             role="status"
-            className={`pointer-events-auto flex items-start gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium shadow-lg ${
-              toast.type === 'success'
-                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                : 'border-red-200 bg-red-50 text-red-800'
-            }`}
+            className="animate-fade-up pointer-events-auto flex items-start gap-2.5 rounded-xl border bg-white/95 px-3.5 py-3 text-sm font-medium shadow-xl shadow-slate-950/10 backdrop-blur"
           >
             {toast.type === 'success' ? (
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+              <CheckCircle2 className="mt-0.5 h-4.5 w-4.5 shrink-0 text-emerald-500" />
             ) : (
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <AlertCircle className="mt-0.5 h-4.5 w-4.5 shrink-0 text-red-500" />
             )}
-            <span className="flex-1">{toast.message}</span>
+            <span className="flex-1 text-slate-700">{toast.message}</span>
             <button
               type="button"
               onClick={() => dismiss(toast.id)}
-              className="shrink-0 rounded p-0.5 opacity-60 hover:opacity-100"
+              className="shrink-0 rounded-md p-0.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
               aria-label="Dismiss notification"
             >
               <X className="h-3.5 w-3.5" />

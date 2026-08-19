@@ -14,20 +14,20 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-teal-700 text-white hover:bg-teal-800 focus-visible:outline-teal-700 disabled:bg-teal-700/50',
+    'bg-gradient-to-b from-teal-600 to-teal-700 text-white shadow-sm shadow-teal-700/25 hover:from-teal-500 hover:to-teal-700 hover:shadow-md hover:shadow-teal-700/30 active:scale-[0.98] focus-visible:outline-teal-600 disabled:from-teal-600 disabled:to-teal-700 disabled:opacity-50 disabled:shadow-none',
   secondary:
-    'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:outline-slate-400 disabled:text-slate-400',
+    'border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 active:scale-[0.98] focus-visible:outline-slate-400 disabled:text-slate-400 disabled:hover:bg-white',
   danger:
-    'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600 disabled:bg-red-600/50',
+    'bg-gradient-to-b from-red-500 to-red-600 text-white shadow-sm shadow-red-600/25 hover:from-red-500 hover:to-red-700 hover:shadow-md hover:shadow-red-600/30 active:scale-[0.98] focus-visible:outline-red-600 disabled:opacity-50 disabled:shadow-none',
   ghost:
-    'text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-slate-400 disabled:text-slate-300',
+    'text-slate-600 hover:bg-slate-100 hover:text-slate-900 active:scale-[0.98] focus-visible:outline-slate-400 disabled:text-slate-300',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-8 px-3 text-xs rounded-md gap-1.5',
-  md: 'h-9 px-4 text-sm rounded-lg gap-2',
-  lg: 'h-11 px-5 text-sm rounded-lg gap-2',
-  xl: 'h-14 px-6 text-base rounded-xl gap-2',
+  sm: 'h-8 px-3 text-xs rounded-lg gap-1.5',
+  md: 'h-9 px-4 text-sm rounded-xl gap-2',
+  lg: 'h-11 px-5 text-sm rounded-xl gap-2',
+  xl: 'h-14 px-6 text-base rounded-2xl gap-2',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -40,7 +40,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       type="button"
       disabled={disabled || loading}
       className={cn(
-        'inline-flex items-center justify-center font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center font-semibold transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed',
         variantClasses[variant],
         sizeClasses[size],
         fullWidth && 'w-full',

@@ -26,7 +26,7 @@ export function PaginationBar({ pagination, onPageChange }: PaginationBarProps) 
   if (total === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-4 py-3">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-5 py-3.5">
       <p className="text-xs text-slate-500">
         Showing page {page} of {totalPages} · {total} total
       </p>
@@ -36,7 +36,7 @@ export function PaginationBar({ pagination, onPageChange }: PaginationBarProps) 
             type="button"
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1}
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Previous page"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -53,10 +53,10 @@ export function PaginationBar({ pagination, onPageChange }: PaginationBarProps) 
                 onClick={() => onPageChange(item)}
                 aria-current={item === page ? 'page' : undefined}
                 className={cn(
-                  'h-8 min-w-8 rounded-md border px-2 text-xs font-semibold',
+                  'h-8 min-w-8 rounded-lg border px-2 text-xs font-semibold transition-all',
                   item === page
-                    ? 'border-teal-700 bg-teal-700 text-white'
-                    : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                    ? 'border-teal-700 bg-gradient-to-b from-teal-600 to-teal-700 text-white shadow-sm shadow-teal-700/25'
+                    : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
                 )}
               >
                 {item}
@@ -67,7 +67,7 @@ export function PaginationBar({ pagination, onPageChange }: PaginationBarProps) 
             type="button"
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages}
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Next page"
           >
             <ChevronRight className="h-4 w-4" />

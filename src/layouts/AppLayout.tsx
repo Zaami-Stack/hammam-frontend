@@ -7,6 +7,7 @@ import {
   LogOut,
   Menu,
   PlusCircle,
+  ShieldCheck,
   Tags,
   Users,
   X,
@@ -39,6 +40,21 @@ const receptionNav: NavItem[] = [
   { to: '/reception/my-entries', label: 'My Entries', icon: DoorOpen },
 ];
 
+function BrandMark({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        'flex items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-800 text-xl text-white shadow-md shadow-teal-900/30',
+        className
+      )}
+    >
+      <span aria-hidden className="leading-none">
+        ♨
+      </span>
+    </div>
+  );
+}
+
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const { user, logout } = useAuth();
   const toast = useToast();
@@ -54,17 +70,15 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 px-5 py-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-700 text-lg font-bold text-white">
-          ♨
-        </div>
+      <div className="flex items-center gap-3 px-5 py-6">
+        <BrandMark className="h-11 w-11" />
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-white">Hammam Manager</p>
-          <p className="truncate text-xs text-teal-300/80">Moroccan Management System</p>
+          <p className="font-display truncate text-[15px] font-bold text-white">Hammam Manager</p>
+          <p className="truncate text-[11px] font-medium text-teal-200/70">Moroccan Management System</p>
         </div>
       </div>
 
-      <nav className="mt-2 flex-1 space-y-1 px-3" aria-label="Main navigation">
+      <nav className="mt-1 flex-1 space-y-1 px-3" aria-label="Main navigation">
         {nav.map((item) => (
           <NavLink
             key={item.to}
@@ -73,33 +87,33 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
                 isActive
-                  ? 'bg-teal-800/80 text-white'
-                  : 'text-teal-100/80 hover:bg-teal-800/40 hover:text-white'
+                  ? 'bg-gradient-to-r from-teal-600/90 to-teal-700/60 text-white shadow-md shadow-teal-950/30'
+                  : 'text-teal-100/70 hover:bg-white/5 hover:text-white'
               )
             }
           >
-            <item.icon className="h-5 w-5" aria-hidden />
+            <item.icon className="h-[18px] w-[18px]" aria-hidden />
             {item.label}
           </NavLink>
         ))}
       </nav>
 
-      <div className="border-t border-teal-800/60 p-3">
-        <div className="flex items-center gap-3 rounded-lg px-2 py-2">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-600 text-xs font-bold text-white">
+      <div className="border-t border-white/10 p-3">
+        <div className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-2.5">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 text-xs font-bold text-white ring-2 ring-white/10">
             {user ? initials(user.name) : '?'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-white">{user?.name}</p>
-            <p className="truncate text-xs text-teal-300/80">{user?.email}</p>
+            <p className="truncate text-[13px] font-semibold text-white">{user?.name}</p>
+            <p className="truncate text-[11px] text-teal-200/60">{user?.email}</p>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleLogout}
-            className="text-teal-100 hover:bg-teal-800/40 hover:text-white"
+            className="text-teal-100/70 hover:bg-white/10 hover:text-white"
             aria-label="Logout"
           >
             <LogOut className="h-4 w-4" />
@@ -112,11 +126,24 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
 export function AppLayout({ children }: { children?: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
+
+  const pageLabel: Record<string, string> = {
+    '/admin/dashboard': 'Dashboard',
+    '/admin/entries': 'Entrances',
+    '/admin/users': 'Users',
+    '/admin/prices': 'Prices',
+    '/admin/reports': 'Reports',
+    '/reception/dashboard': 'Dashboard',
+    '/reception/new-entry': 'New Entrance',
+    '/reception/my-entries': 'My Entries',
+  };
+  const currentLabel = pageLabel[window.location.pathname] ?? 'Operations';
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-sand-50">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 bg-slate-900 lg:block">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 bg-gradient-to-b from-teal-950 via-teal-900 to-teal-950 lg:block">
         <SidebarContent />
       </aside>
 
@@ -124,15 +151,15 @@ export function AppLayout({ children }: { children?: ReactNode }) {
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div
-            className="absolute inset-0 bg-slate-900/60"
+            className="animate-fade-in absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
             aria-hidden
           />
-          <aside className="absolute inset-y-0 left-0 w-64 bg-slate-900">
+          <aside className="animate-fade-up absolute inset-y-0 left-0 w-72 bg-gradient-to-b from-teal-950 via-teal-900 to-teal-950">
             <button
               type="button"
               onClick={() => setSidebarOpen(false)}
-              className="absolute right-3 top-4 rounded p-1 text-teal-100 hover:bg-teal-800/40"
+              className="absolute right-3 top-4 rounded-lg p-1.5 text-teal-100/70 transition-colors hover:bg-white/10 hover:text-white"
               aria-label="Close menu"
             >
               <X className="h-5 w-5" />
@@ -143,21 +170,31 @@ export function AppLayout({ children }: { children?: ReactNode }) {
       )}
 
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur">
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-slate-200/70 bg-sand-50/85 px-4 backdrop-blur-md sm:px-6">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
+            className="rounded-xl border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition-colors hover:bg-slate-50 lg:hidden"
             aria-label="Open menu"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4.5 w-4.5" />
           </button>
-          <div className="text-sm text-slate-500">
-            <span className="font-semibold text-slate-700">Moroccan Hammam</span>
-            <span className="hidden sm:inline"> — Daily Operations</span>
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="hidden h-4 w-px bg-slate-300 sm:block" aria-hidden />
+            <span className="font-display truncate text-sm font-bold text-slate-800">
+              {currentLabel}
+            </span>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            <span className="hidden items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-[11px] font-semibold text-teal-700 sm:inline-flex">
+              <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
+              {user?.role === 'ADMIN' ? 'Administrator' : 'Reception'}
+            </span>
           </div>
         </header>
-        <main className="mx-auto max-w-7xl p-4 sm:p-6">{children ?? <Outlet />}</main>
+        <main key={currentLabel} className="animate-fade-in mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+          {children ?? <Outlet />}
+        </main>
       </div>
     </div>
   );
