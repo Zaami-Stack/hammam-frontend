@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react';
 
-export function LoadingSpinner({ label = 'Loading...' }: { label?: string }) {
+export function LoadingSpinner({ label = 'Chargement...' }: { label?: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-14 text-slate-500">
       <Loader2 className="h-6 w-6 animate-spin text-teal-600" aria-hidden />

@@ -13,7 +13,7 @@ import { Modal } from '../../components/ui/Modal';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { formatCurrency } from '../../utils/format';
+import { formatCurrency, frName } from '../../utils/format';
 import { isApiError, PriceRow } from '../../types';
 
 export function AdminPricesPage() {
@@ -24,15 +24,15 @@ export function AdminPricesPage() {
   const columns: Column<PriceRow>[] = [
     {
       key: 'hammam_name',
-      header: 'Hammam',
+      header: 'Secteur',
       render: (row) => (
-        <Badge tone={row.hammam_name === 'Men' ? 'blue' : 'violet'}>{row.hammam_name}</Badge>
+        <Badge tone={row.hammam_name === 'Men' ? 'blue' : 'violet'}>{frName(row.hammam_name)}</Badge>
       ),
     },
-    { key: 'category_name', header: 'Category' },
+    { key: 'category_name', header: 'Catégorie' },
     {
       key: 'price',
-      header: 'Price',
+      header: 'Prix',
       render: (row) => <span className="text-lg font-bold text-teal-700">{formatCurrency(row.price)}</span>,
     },
     {
@@ -40,7 +40,7 @@ export function AdminPricesPage() {
       header: 'Action',
       render: (row) => (
         <Button variant="secondary" size="sm" onClick={() => setEditing(row)}>
-          <Pencil className="h-4 w-4" /> Edit
+          <Pencil className="h-4 w-4" /> Modifier
         </Button>
       ),
     },
@@ -49,20 +49,20 @@ export function AdminPricesPage() {
   return (
     <div>
       <PageHeader
-        title="Price Management"
-        description="A price change only affects new entrances."
+        title="Gestion des tarifs"
+        description="Une modification de tarif ne s'applique qu'aux nouvelles entrées."
       />
 
       <Card padding={false}>
-        {prices.loading && <LoadingSpinner label="Loading prices..." />}
+        {prices.loading && <LoadingSpinner label="Chargement des tarifs..." />}
         {prices.error && <ErrorMessage error={prices.error} onRetry={prices.reload} />}
         {prices.data && (
           <>
             {prices.data.length === 0 ? (
               <EmptyState
                 icon={Tag}
-                title="No prices configured"
-                description="Prices are required before reception can register entrances."
+                title="Aucun tarif configuré"
+                description="Des tarifs sont nécessaires avant que la réception puisse enregistrer des entrées."
               />
             ) : (
               <DataTable columns={columns} rows={prices.data} rowKey={(row) => row.id} />
@@ -72,8 +72,8 @@ export function AdminPricesPage() {
       </Card>
 
       <p className="mt-4 text-xs text-slate-500">
-        Changing a price only affects future entrances. Past entrances keep the price they
-        were paid.
+        Une modification de tarif ne s'applique qu'aux futures entrées. Les entrées passées
+        conservent le tarif payé.
       </p>
 
       <PriceModal
@@ -81,7 +81,7 @@ export function AdminPricesPage() {
         onClose={() => setEditing(null)}
         onSaved={() => {
           setEditing(null);
-          toast.success('Price updated — future entrances will use the new rate');
+          toast.success('Tarif mis à jour — les nouvelles entrées utiliseront ce tarif');
           prices.reload();
         }}
       />
@@ -116,11 +116,11 @@ function PriceModal({
     if (!price) return;
     const parsed = Number(value);
     if (!Number.isFinite(parsed) || parsed < 0) {
-      setError('Price must be a positive number');
+      setError('Le prix doit être un nombre positif');
       return;
     }
     if (parsed > 999999.99) {
-      setError('Price is too large');
+      setError('Le prix est trop élevé');
       return;
     }
     setError(null);
@@ -129,7 +129,7 @@ function PriceModal({
       await pricesService.updatePrice(price.id, parsed);
       onSaved();
     } catch (err) {
-      setError(isApiError(err) ? err.message : 'Unable to update price');
+      setError(isApiError(err) ? err.message : 'Impossible de mettre à jour le tarif');
     } finally {
       setSubmitting(false);
     }
@@ -138,7 +138,7 @@ function PriceModal({
   return (
     <Modal
       open={price !== null}
-      title={price ? `Edit price — ${price.hammam_name} / ${price.category_name}` : ''}
+      title={price ? `Modifier le tarif — ${frName(price.hammam_name)} / ${frName(price.category_name)}` : ''}
       onClose={onClose}
       footer={
         <>
@@ -146,14 +146,14 @@ function PriceModal({
             Cancel
           </Button>
           <Button onClick={submit} loading={submitting}>
-            Save price
+            Enregistrer le tarif
           </Button>
         </>
       }
     >
       <div className="space-y-4">
         <Input
-          label="Price (DH)"
+          label="Prix (DH)"
           type="number"
           min={0}
           step="0.01"
@@ -163,7 +163,7 @@ function PriceModal({
         />
         {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
         <div className="rounded-lg bg-teal-50 px-3 py-2 text-xs text-teal-800">
-          Current price: {price ? formatCurrency(price.price) : ''} — new entrances only.
+          Tarif actuel : {price ? formatCurrency(price.price) : ''} — nouvelles entrées uniquement.
         </div>
       </div>
     </Modal>

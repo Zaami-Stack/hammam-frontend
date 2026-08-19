@@ -95,10 +95,21 @@ export function shiftCasablancaDay(date: string, days: number): string {
   ).padStart(2, '0')}`;
 }
 
+const DAY_NAMES_FR: Record<string, string> = {
+  Men: 'Hommes',
+  Women: 'Femmes',
+  Adult: 'Adulte',
+  Child: 'Enfant',
+};
+
+export function frName(name: string): string {
+  return DAY_NAMES_FR[name] ?? name;
+}
+
 export function weekdayLabel(day: string): string {
   const [y, m, d] = day.slice(0, 10).split('-').map(Number);
   if (!y || !m || !d) return day;
-  return new Intl.DateTimeFormat('en-GB', {
+  return new Intl.DateTimeFormat('fr-FR', {
     timeZone: CASABLANCA,
     weekday: 'short',
     day: '2-digit',

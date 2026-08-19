@@ -8,7 +8,7 @@ import { PageHeader } from '../../components/ui/PageHeader';
 import { Button } from '../../components/ui/Button';
 import { ErrorMessage } from '../../components/ui/ErrorMessage';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
-import { formatCurrency, formatTime } from '../../utils/format';
+import { formatCurrency, formatTime, frName } from '../../utils/format';
 import { cn } from '../../utils/cn';
 import { isApiError, PriceRow } from '../../types';
 
@@ -113,15 +113,15 @@ export function NewEntryPage() {
     setSubmitting(true);
     try {
       const entry = await entriesService.create({ hammamId: selection.hammamId, categoryId: selection.categoryId });
-      toast.success(`Entry #${entry.id} recorded · ${entry.hammam_name} / ${entry.category_name} · ${formatCurrency(entry.price)}`);
+      toast.success(`Entrée n°${entry.id} enregistrée · ${frName(entry.hammam_name)} / ${frName(entry.category_name)} · ${formatCurrency(entry.price)}`);
       setLastEntry({
         id: entry.id,
-        label: `${entry.hammam_name} · ${entry.category_name} · ${formatCurrency(entry.price)}`,
+        label: `${frName(entry.hammam_name)} · ${frName(entry.category_name)} · ${formatCurrency(entry.price)}`,
         time: formatTime(entry.created_at),
       });
       setSelection(null);
     } catch (err) {
-      toast.error(isApiError(err) ? err.message : 'Unable to record the entrance');
+      toast.error(isApiError(err) ? err.message : "Impossible d'enregistrer l'entrée");
     } finally {
       setSubmitting(false);
     }
@@ -132,11 +132,11 @@ export function NewEntryPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <PageHeader
-        title="Record Entry"
-        description="Tap a category to record the visitor — the current price is applied automatically."
+        title="Enregistrer une entrée"
+        description="Touchez une catégorie pour enregistrer le visiteur — le tarif actuel est appliqué automatiquement."
       />
 
-      {loading && <LoadingSpinner label="Loading entry options..." />}
+      {loading && <LoadingSpinner label="Chargement des options..." />}
       {meta.error && <ErrorMessage error={meta.error} onRetry={meta.reload} />}
 
       {!loading && !meta.error && (
@@ -148,10 +148,10 @@ export function NewEntryPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold text-emerald-900">
-                  Entry #{lastEntry.id} recorded
+                  Entrée n°{lastEntry.id} enregistrée
                 </p>
                 <p className="truncate text-xs text-emerald-700">
-                  {lastEntry.label} · {lastEntry.time} — ready for the next visitor
+                  {lastEntry.label} · {lastEntry.time} — prête pour le prochain visiteur
                 </p>
               </div>
               <button
@@ -159,14 +159,14 @@ export function NewEntryPage() {
                 onClick={() => setLastEntry(null)}
                 className="rounded-lg px-2 py-1 text-xs font-semibold text-emerald-700 underline-offset-2 hover:underline"
               >
-                Dismiss
+                Fermer
               </button>
             </div>
           )}
 
           <div className="mb-4 flex items-center justify-between gap-3">
             <p className="text-xs font-medium text-slate-500">
-              Prices load from the system and refresh automatically.
+              Les tarifs sont chargés automatiquement et se mettent à jour régulièrement.
             </p>
             <button
               type="button"
@@ -174,7 +174,7 @@ export function NewEntryPage() {
               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
             >
               <RefreshCw className={cn('h-3.5 w-3.5', prices.loading && 'animate-spin')} aria-hidden />
-              Refresh prices
+              Actualiser les tarifs
             </button>
           </div>
 
@@ -204,10 +204,10 @@ export function NewEntryPage() {
                     </span>
                     <div>
                       <h2 className="font-display text-xl font-extrabold tracking-tight text-slate-900">
-                        {name.toUpperCase()}
+                        {isMen ? 'HOMMES' : 'FEMMES'}
                       </h2>
                       <p className="text-xs font-medium text-slate-500">
-                        {isMen ? 'Male section' : 'Female section'}
+                        {isMen ? 'Section hommes' : 'Section femmes'}
                       </p>
                     </div>
                   </header>
@@ -234,10 +234,10 @@ export function NewEntryPage() {
                         >
                           <span>
                             <span className="block text-base font-bold text-slate-900">
-                              {tile.categoryName}
+                              {frName(tile.categoryName)}
                             </span>
                             <span className="mt-0.5 block text-xs font-medium text-slate-500">
-                              {tile.price === null ? 'Price unavailable' : formatCurrency(tile.price)}
+                              {tile.price === null ? 'Tarif indisponible' : formatCurrency(tile.price)}
                             </span>
                           </span>
                           <span
@@ -275,9 +275,9 @@ export function NewEntryPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-slate-700">
-                    {selection ? `${selection.hammamName} · ${selection.categoryName}` : '…'}
+                    {selection ? `${frName(selection.hammamName)} · ${frName(selection.categoryName)}` : '…'}
                   </p>
-                  <p className="text-xs text-slate-500">Price applied at recording</p>
+                  <p className="text-xs text-slate-500">Tarif appliqué à l'enregistrement</p>
                 </div>
               </div>
               <div className="flex items-center justify-end gap-3">
@@ -286,11 +286,11 @@ export function NewEntryPage() {
                 </span>
                 <div className="flex gap-2">
                   <Button variant="secondary" onClick={() => setSelection(null)} disabled={submitting}>
-                    Cancel
+                    Annuler
                   </Button>
                   <Button size="lg" onClick={confirmEntry} loading={submitting} disabled={!selection || price === null}>
                     {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
-                    Confirm entry
+                    Confirmer l'entrée
                   </Button>
                 </div>
               </div>

@@ -9,7 +9,7 @@ import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../../components/ui/ErrorMessage';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Badge } from '../../components/ui/Badge';
-import { formatCurrency, formatDateTime, todayCasablanca } from '../../utils/format';
+import { formatCurrency, formatDateTime, frName, todayCasablanca } from '../../utils/format';
 import { Entry } from '../../types';
 
 export function MyEntriesPage() {
@@ -21,18 +21,18 @@ export function MyEntriesPage() {
   const columns: Column<Entry>[] = [
     {
       key: 'created_at',
-      header: 'Date & time',
+      header: 'Date et heure',
       render: (row) => <span className="whitespace-nowrap">{formatDateTime(row.created_at)}</span>,
     },
     {
       key: 'hammam_name',
-      header: 'Area',
-      render: (row) => <Badge tone={row.hammam_name === 'Men' ? 'blue' : 'violet'}>{row.hammam_name}</Badge>,
+      header: 'Secteur',
+      render: (row) => <Badge tone={row.hammam_name === 'Men' ? 'blue' : 'violet'}>{frName(row.hammam_name)}</Badge>,
     },
-    { key: 'category_name', header: 'Category' },
+    { key: 'category_name', header: 'Catégorie' },
     {
       key: 'price',
-      header: 'Price',
+      header: 'Prix',
       render: (row) => <span className="font-semibold">{formatCurrency(row.price)}</span>,
     },
   ];
@@ -40,19 +40,19 @@ export function MyEntriesPage() {
   return (
     <div>
       <PageHeader
-        title="My Entries"
-        description={`Your registrations for the current business day (${today})`}
+        title="Mes entrées"
+        description={`Vos enregistrements du jour (${today})`}
       />
 
       <Card padding={false}>
-        {entries.loading && <LoadingSpinner label="Loading your entries..." />}
+        {entries.loading && <LoadingSpinner label="Chargement de vos entrées..." />}
         {entries.error && <ErrorMessage error={entries.error} onRetry={entries.reload} />}
         {entries.data && (
           <>
             {entries.data.data.length === 0 ? (
               <EmptyState
-                title="No entries today"
-                description="Entrances you register will appear here."
+                title="Aucune entrée aujourd'hui"
+                description="Les entrées que vous enregistrez apparaîtront ici."
               />
             ) : (
               <DataTable columns={columns} rows={entries.data.data} rowKey={(row) => row.id} />

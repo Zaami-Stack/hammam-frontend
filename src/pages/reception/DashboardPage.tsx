@@ -13,7 +13,7 @@ import { ErrorMessage } from '../../components/ui/ErrorMessage';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { formatCurrency, formatTime, todayCasablanca } from '../../utils/format';
+import { formatCurrency, formatTime, frName, todayCasablanca } from '../../utils/format';
 import { Entry } from '../../types';
 
 export function ReceptionDashboardPage() {
@@ -30,13 +30,13 @@ export function ReceptionDashboardPage() {
     },
     {
       key: 'hammam_name',
-      header: 'Area',
-      render: (row) => <Badge tone={row.hammam_name === 'Men' ? 'blue' : 'violet'}>{row.hammam_name}</Badge>,
+      header: 'Secteur',
+      render: (row) => <Badge tone={row.hammam_name === 'Men' ? 'blue' : 'violet'}>{frName(row.hammam_name)}</Badge>,
     },
-    { key: 'category_name', header: 'Category' },
+    { key: 'category_name', header: 'Catégorie' },
     {
       key: 'price',
-      header: 'Price',
+      header: 'Prix',
       render: (row) => <span className="font-semibold">{formatCurrency(row.price)}</span>,
     },
   ];
@@ -44,38 +44,38 @@ export function ReceptionDashboardPage() {
   return (
     <div>
       <PageHeader
-        title="Today at the hammam"
-        description={`Business day: ${today}`}
+        title="Aujourd'hui au hammam"
+        description={`Journée de travail : ${today}`}
         actions={
           <Link to="/reception/new-entry">
             <Button>
-              <PlusCircle className="h-4 w-4" /> New entrance
+              <PlusCircle className="h-4 w-4" /> Nouvelle entrée
             </Button>
           </Link>
         }
       />
 
-      {stats.loading && <LoadingSpinner label="Loading today's statistics..." />}
+      {stats.loading && <LoadingSpinner label="Chargement des statistiques du jour..." />}
       {stats.error && <ErrorMessage error={stats.error} onRetry={stats.reload} />}
 
       {stats.data && (
         <div className="mb-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard label="My entries today" value={String(stats.data.entries.total)} icon={DoorOpen} tone="teal" />
-          <StatCard label="Revenue today" value={formatCurrency(stats.data.entries.revenue)} icon={DoorOpen} tone="amber" />
-          <StatCard label="Men" value={String(stats.data.entries.menAdults + stats.data.entries.menChildren)} icon={DoorOpen} tone="blue" />
-          <StatCard label="Women" value={String(stats.data.entries.womenAdults + stats.data.entries.womenChildren)} icon={DoorOpen} tone="violet" />
+          <StatCard label="Mes entrées aujourd'hui" value={String(stats.data.entries.total)} icon={DoorOpen} tone="teal" />
+          <StatCard label="Recettes du jour" value={formatCurrency(stats.data.entries.revenue)} icon={DoorOpen} tone="amber" />
+          <StatCard label="Hommes" value={String(stats.data.entries.menAdults + stats.data.entries.menChildren)} icon={DoorOpen} tone="blue" />
+          <StatCard label="Femmes" value={String(stats.data.entries.womenAdults + stats.data.entries.womenChildren)} icon={DoorOpen} tone="violet" />
         </div>
       )}
 
-      <Card title="My latest entries" subtitle="Your registrations for today">
-        {entries.loading && <LoadingSpinner label="Loading your entries..." />}
+      <Card title="Mes dernières entrées" subtitle="Vos enregistrements du jour">
+        {entries.loading && <LoadingSpinner label="Chargement de vos entrées..." />}
         {entries.error && <ErrorMessage error={entries.error} onRetry={entries.reload} />}
         {entries.data && (
           <>
             {entries.data.data.length === 0 ? (
               <EmptyState
-                title="No entries yet today"
-                description="Register the first entrance of the day with the New entrance button."
+                title="Aucune entrée aujourd'hui"
+                description="Enregistrez la première entrée de la journée avec le bouton Nouvelle entrée."
               />
             ) : (
               <DataTable columns={columns} rows={entries.data.data} rowKey={(row) => row.id} />
@@ -86,7 +86,7 @@ export function ReceptionDashboardPage() {
                   to="/reception/my-entries"
                   className="text-sm font-semibold text-teal-700 hover:underline"
                 >
-                  View all my entries →
+                  Voir toutes mes entrées →
                 </Link>
               </div>
             )}

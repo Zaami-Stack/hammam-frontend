@@ -8,7 +8,7 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({
-  title = 'Nothing here yet',
+  title = 'Rien pour le moment',
   description,
   icon: Icon = Inbox,
 }: EmptyStateProps) {

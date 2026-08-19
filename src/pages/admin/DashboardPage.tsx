@@ -39,8 +39,8 @@ export function AdminDashboardPage() {
     const entries = dashboard.data?.entries;
     if (!entries) return [];
     return [
-      { name: 'Men', value: entries.menAdults + entries.menChildren },
-      { name: 'Women', value: entries.womenAdults + entries.womenChildren },
+      { name: 'Hommes', value: entries.menAdults + entries.menChildren },
+      { name: 'Femmes', value: entries.womenAdults + entries.womenChildren },
     ];
   }, [dashboard.data]);
 
@@ -48,8 +48,8 @@ export function AdminDashboardPage() {
     const entries = dashboard.data?.entries;
     if (!entries) return [];
     return [
-      { name: 'Adults', value: entries.menAdults + entries.womenAdults },
-      { name: 'Children', value: entries.menChildren + entries.womenChildren },
+      { name: 'Adultes', value: entries.menAdults + entries.womenAdults },
+      { name: 'Enfants', value: entries.menChildren + entries.womenChildren },
     ];
   }, [dashboard.data]);
 
@@ -68,11 +68,11 @@ export function AdminDashboardPage() {
   return (
     <div>
       <PageHeader
-        title="Admin Dashboard"
+        title="Tableau de bord"
         description={
           dashboard.data
-            ? `Period: ${dashboard.data.range.from} → ${dashboard.data.range.to}`
-            : 'Daily overview'
+            ? `Période : ${dashboard.data.range.from} → ${dashboard.data.range.to}`
+            : 'Aperçu du jour'
         }
       />
 
@@ -102,7 +102,7 @@ export function AdminDashboardPage() {
         )}
       </div>
 
-      {dashboard.loading && <LoadingSpinner label="Loading dashboard..." />}
+      {dashboard.loading && <LoadingSpinner label="Chargement du tableau de bord..." />}
       {dashboard.error && (
         <ErrorMessage error={dashboard.error} onRetry={dashboard.reload} />
       )}
@@ -111,25 +111,25 @@ export function AdminDashboardPage() {
         <div className="space-y-5">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard
-              label="Total Entries"
+              label="Total des entrées"
               value={String(entries.total)}
               icon={DoorOpen}
               tone="teal"
             />
             <StatCard
-              label="Total Revenue"
+              label="Recettes totales"
               value={formatCurrency(entries.revenue)}
               icon={CircleDollarSign}
               tone="amber"
             />
             <StatCard
-              label="Men"
+              label="Hommes"
               value={String(entries.menAdults + entries.menChildren)}
               icon={UserCheck}
               tone="blue"
             />
             <StatCard
-              label="Women"
+              label="Femmes"
               value={String(entries.womenAdults + entries.womenChildren)}
               icon={UsersIcon}
               tone="violet"
@@ -138,55 +138,55 @@ export function AdminDashboardPage() {
 
           <div className="grid gap-5 lg:grid-cols-3">
             <Card
-              title="Daily Entrances"
-              subtitle="Entries per day in the period"
+              title="Entrées par jour"
+              subtitle="Entrées par jour sur la période"
               className="lg:col-span-2"
             >
               <DailyChart data={daily} />
             </Card>
 
-            <Card title="Men vs Women" subtitle="Distribution for the period">
+            <Card title="Hommes vs Femmes" subtitle="Répartition sur la période">
               {entries.total > 0 ? (
                 <SimplePieChart data={genderData} />
               ) : (
-                <p className="py-10 text-center text-sm text-slate-500">No entries in this period.</p>
+                <p className="py-10 text-center text-sm text-slate-500">Aucune entrée sur cette période.</p>
               )}
             </Card>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
-            <Card title="Revenue per Day" className="lg:col-span-2">
+            <Card title="Recettes par jour" className="lg:col-span-2">
               <RevenueChart data={daily} />
             </Card>
 
-            <Card title="Adults vs Children" subtitle="Distribution for the period">
+            <Card title="Adultes vs Enfants" subtitle="Répartition sur la période">
               {entries.total > 0 ? (
                 <SimplePieChart data={categoryData} />
               ) : (
-                <p className="py-10 text-center text-sm text-slate-500">No entries in this period.</p>
+                <p className="py-10 text-center text-sm text-slate-500">Aucune entrée sur cette période.</p>
               )}
             </Card>
           </div>
 
-          <Card title="Entries by Agent" subtitle="Performance for the period">
-            {agents.length > 0 ? <AgentsBarChart data={agents} /> : <p className="py-10 text-center text-sm text-slate-500">No agent data in this period.</p>}
+          <Card title="Entrées par agent" subtitle="Performance sur la période">
+            {agents.length > 0 ? <AgentsBarChart data={agents} /> : <p className="py-10 text-center text-sm text-slate-500">Aucune donnée d'agent sur cette période.</p>}
           </Card>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm">
-              <p className="text-xs font-medium text-slate-500">Men Adults</p>
+              <p className="text-xs font-medium text-slate-500">Hommes Adultes</p>
               <p className="mt-1 text-2xl font-bold text-teal-700">{entries.menAdults}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm">
-              <p className="text-xs font-medium text-slate-500">Men Children</p>
+              <p className="text-xs font-medium text-slate-500">Hommes Enfants</p>
               <p className="mt-1 text-2xl font-bold text-teal-700">{entries.menChildren}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm">
-              <p className="text-xs font-medium text-slate-500">Women Adults</p>
+              <p className="text-xs font-medium text-slate-500">Femmes Adultes</p>
               <p className="mt-1 text-2xl font-bold text-violet-700">{entries.womenAdults}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm">
-              <p className="text-xs font-medium text-slate-500">Women Children</p>
+              <p className="text-xs font-medium text-slate-500">Femmes Enfants</p>
               <p className="mt-1 text-2xl font-bold text-violet-700">{entries.womenChildren}</p>
             </div>
           </div>

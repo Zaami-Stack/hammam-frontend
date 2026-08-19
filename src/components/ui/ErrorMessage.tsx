@@ -7,7 +7,7 @@ interface ErrorMessageProps {
   onRetry?: () => void;
 }
 
-export function ErrorMessage({ error, fallback = 'Something went wrong.', onRetry }: ErrorMessageProps) {
+export function ErrorMessage({ error, fallback = 'Une erreur est survenue.', onRetry }: ErrorMessageProps) {
   return (
     <div className="flex flex-col items-center gap-2 rounded-2xl border border-red-100 bg-red-50/70 px-4 py-8 text-center">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100">
@@ -20,7 +20,7 @@ export function ErrorMessage({ error, fallback = 'Something went wrong.', onRetr
           onClick={onRetry}
           className="text-sm font-semibold text-red-700 underline-offset-2 hover:underline"
         >
-          Try again
+          Réessayer
         </button>
       )}
     </div>

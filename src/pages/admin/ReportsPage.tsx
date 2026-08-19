@@ -14,22 +14,22 @@ import { AgentPoint, DashboardSummary } from '../../types';
 type Tab = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'agents';
 
 const tabs: { value: Tab; label: string }[] = [
-  { value: 'daily', label: 'Daily' },
-  { value: 'weekly', label: 'Weekly' },
-  { value: 'monthly', label: 'Monthly' },
-  { value: 'yearly', label: 'Yearly' },
+  { value: 'daily', label: 'Jour' },
+  { value: 'weekly', label: 'Semaine' },
+  { value: 'monthly', label: 'Mois' },
+  { value: 'yearly', label: 'Année' },
   { value: 'agents', label: 'Agents' },
 ];
 
 function SummaryGrid({ summary }: { summary: DashboardSummary }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-      <MiniStat label="Men / Adult" value={summary.menAdults} tone="text-blue-700" />
-      <MiniStat label="Men / Child" value={summary.menChildren} tone="text-blue-700" />
-      <MiniStat label="Women / Adult" value={summary.womenAdults} tone="text-violet-700" />
-      <MiniStat label="Women / Child" value={summary.womenChildren} tone="text-violet-700" />
+      <MiniStat label="Hommes / Adultes" value={summary.menAdults} tone="text-blue-700" />
+      <MiniStat label="Hommes / Enfants" value={summary.menChildren} tone="text-blue-700" />
+      <MiniStat label="Femmes / Adultes" value={summary.womenAdults} tone="text-violet-700" />
+      <MiniStat label="Femmes / Enfants" value={summary.womenChildren} tone="text-violet-700" />
       <MiniStat label="Total" value={summary.total} tone="text-teal-700" />
-      <MiniStat label="Revenue" value={formatCurrency(summary.revenue)} tone="text-amber-700" />
+      <MiniStat label="Recettes" value={formatCurrency(summary.revenue)} tone="text-amber-700" />
     </div>
   );
 }
@@ -45,10 +45,10 @@ function MiniStat({ label, value, tone }: { label: string; value: string | numbe
 
 const agentColumns: Column<AgentPoint>[] = [
   { key: 'name', header: 'Agent' },
-  { key: 'entries', header: 'Entries' },
+  { key: 'entries', header: 'Entrées' },
   {
     key: 'revenue',
-    header: 'Revenue',
+    header: 'Recettes',
     render: (row) => <span className="font-semibold">{formatCurrency(row.revenue)}</span>,
   },
 ];
@@ -90,7 +90,7 @@ export function AdminReportsPage() {
     <div>
       <PageHeader
         title="Reports"
-        description="Revenue, entrances and agent performance"
+        description="Recettes, entrées et performance des agents"
       />
 
       <div className="-mx-4 mb-4 flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 sm:pb-0">
@@ -127,7 +127,7 @@ export function AdminReportsPage() {
         {tab === 'weekly' && (
           <div className="flex items-end gap-2">
             <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-slate-500">End of week (from Monday)</span>
+              <span className="text-xs font-medium text-slate-500">Fin de semaine (à partir du lundi)</span>
               <input
                 type="date"
                 value={date}
@@ -140,7 +140,7 @@ export function AdminReportsPage() {
         {tab === 'monthly' && (
           <div className="flex items-end gap-2">
             <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-slate-500">Month</span>
+              <span className="text-xs font-medium text-slate-500">Mois</span>
               <input
                 type="month"
                 value={month}
@@ -153,7 +153,7 @@ export function AdminReportsPage() {
         {tab === 'yearly' && (
           <div className="flex items-end gap-2">
             <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-slate-500">Year</span>
+              <span className="text-xs font-medium text-slate-500">Année</span>
               <input
                 type="number"
                 value={year}
@@ -173,7 +173,7 @@ export function AdminReportsPage() {
         )}
       </div>
 
-      {state.loading && <LoadingSpinner label="Loading report..." />}
+      {state.loading && <LoadingSpinner label="Chargement du rapport..." />}
       {state.error && <ErrorMessage error={state.error} onRetry={state.reload} />}
 
       {applied && state.data && (
@@ -181,7 +181,7 @@ export function AdminReportsPage() {
           {tab === 'daily' && 'entries' in state.data && (
             <>
               <SummaryGrid summary={(state.data as { entries: DashboardSummary }).entries} />
-              <Card title="Entries by Agent" subtitle={`Daily report for ${(state.data as { date: string }).date}`}>
+              <Card title="Entrées par agent" subtitle={`Rapport du jour — ${(state.data as { date: string }).date}`}>
                 {(state.data as { byAgent: AgentPoint[] }).byAgent.length ? (
                   <DataTable
                     columns={agentColumns}
@@ -189,7 +189,7 @@ export function AdminReportsPage() {
                     rowKey={(row) => row.user_id}
                   />
                 ) : (
-                  <p className="py-8 text-center text-sm text-slate-500">No entries recorded on this day.</p>
+                  <p className="py-8 text-center text-sm text-slate-500">Aucune entrée enregistrée ce jour-là.</p>
                 )}
               </Card>
             </>
@@ -200,12 +200,12 @@ export function AdminReportsPage() {
               <SummaryGrid summary={(state.data as { entries: DashboardSummary }).entries} />
               <div className="grid gap-5 lg:grid-cols-2">
                 <Card
-                  title="Entries per Day"
-                  subtitle={`Week of ${(state.data as { weekStart: string }).weekStart} → ${(state.data as { weekEnd: string }).weekEnd}`}
+                  title="Entrées par jour"
+                  subtitle={`Semaine du ${(state.data as { weekStart: string }).weekStart} → ${(state.data as { weekEnd: string }).weekEnd}`}
                 >
                   <DailyChart data={(state.data as { daily: { day: string; entries: number; revenue: number }[] }).daily.map((point) => ({ ...point, day: weekdayLabel(point.day) }))} />
                 </Card>
-                <Card title="Revenue per Day">
+                <Card title="Recettes par jour">
                   <RevenueChart data={(state.data as { daily: { day: string; entries: number; revenue: number }[] }).daily.map((point) => ({ ...point, day: weekdayLabel(point.day) }))} />
                 </Card>
               </div>
@@ -215,10 +215,10 @@ export function AdminReportsPage() {
           {tab === 'monthly' && 'entries' in state.data && (
             <>
               <SummaryGrid summary={(state.data as { entries: DashboardSummary }).entries} />
-              <Card title="Daily performance" subtitle={`Monthly report for ${(state.data as { month: string }).month}`}>
+              <Card title="Performance quotidienne" subtitle={`Rapport mensuel — ${(state.data as { month: string }).month}`}>
                 <DailyChart data={(state.data as { daily: { day: string; entries: number; revenue: number }[] }).daily.map((point) => ({ ...point, day: weekdayLabel(point.day) }))} />
               </Card>
-              <Card title="Entries by Agent">
+              <Card title="Entrées par agent">
                 {(state.data as { byAgent: AgentPoint[] }).byAgent.length ? (
                   <DataTable
                     columns={agentColumns}
@@ -226,7 +226,7 @@ export function AdminReportsPage() {
                     rowKey={(row) => row.user_id}
                   />
                 ) : (
-                  <p className="py-8 text-center text-sm text-slate-500">No entries recorded this month.</p>
+                  <p className="py-8 text-center text-sm text-slate-500">Aucune entrée enregistrée ce mois-ci.</p>
                 )}
               </Card>
             </>
@@ -235,7 +235,7 @@ export function AdminReportsPage() {
           {tab === 'yearly' && 'entries' in state.data && (
             <>
               <SummaryGrid summary={(state.data as { entries: DashboardSummary }).entries} />
-              <Card title="Monthly comparison" subtitle={`Yearly report for ${(state.data as { year: string }).year}`}>
+              <Card title="Comparaison mensuelle" subtitle={`Rapport annuel — ${(state.data as { year: string }).year}`}>
                 <RevenueChart data={(state.data as { monthly: { label: string; entries: number; revenue: number }[] }).monthly.map((point) => ({ ...point, day: point.label }))} />
               </Card>
             </>
@@ -243,8 +243,8 @@ export function AdminReportsPage() {
 
           {tab === 'agents' && 'rows' in state.data && (
             <Card
-              title="Agent performance"
-              subtitle={`${(state.data as { from: string }).from} → ${(state.data as { to: string }).to} (last 30 days if no range selected)`}
+              title="Performance des agents"
+              subtitle={`du ${(state.data as { from: string }).from} → ${(state.data as { to: string }).to} (30 derniers jours si aucun intervalle)`}
             >
               {(state.data as { rows: AgentPoint[] }).rows.length ? (
                 <DataTable
@@ -253,7 +253,7 @@ export function AdminReportsPage() {
                   rowKey={(row) => row.user_id}
                 />
               ) : (
-                <p className="py-8 text-center text-sm text-slate-500">No entries in this period.</p>
+                <p className="py-8 text-center text-sm text-slate-500">Aucune entrée sur cette période.</p>
               )}
             </Card>
           )}

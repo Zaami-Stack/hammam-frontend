@@ -20,13 +20,13 @@ export function DateRangePicker({
   return (
     <div className="flex items-end gap-2">
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-medium text-slate-500">From</span>
-        <input type="date" value={from} max={fromMax} onChange={(event) => onFromChange(event.target.value)} className={inputClass} aria-label="From date" />
+        <span className="text-xs font-medium text-slate-500">Du</span>
+        <input type="date" value={from} max={fromMax} onChange={(event) => onFromChange(event.target.value)} className={inputClass} aria-label="Date de début" />
       </div>
       <span className="pb-2 text-slate-300">–</span>
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-medium text-slate-500">To</span>
-        <input type="date" value={to} min={toMin} onChange={(event) => onToChange(event.target.value)} className={inputClass} aria-label="To date" />
+        <span className="text-xs font-medium text-slate-500">Au</span>
+        <input type="date" value={to} min={toMin} onChange={(event) => onToChange(event.target.value)} className={inputClass} aria-label="Date de fin" />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ export function PageHeader({ title, description, actions }: PageHeaderProps) {
     <div className="animate-fade-up mb-6 flex flex-wrap items-end justify-between gap-3">
       <div>
         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-teal-600">
-          Moroccan Hammam
+          Hammam Marocain
         </p>
         <h1 className="font-display mt-1 text-2xl font-extrabold tracking-tight text-slate-900">
           {title}

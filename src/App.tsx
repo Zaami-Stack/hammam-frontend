@@ -80,7 +80,7 @@ function AppRoutes() {
 function RouteFallback() {
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <LoadingSpinner label="Loading page..." />
+      <LoadingSpinner label="Chargement de la page..." />
     </div>
   );
 }

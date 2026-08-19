@@ -55,7 +55,7 @@ export function DailyChart({ data }: { data: { day: string; entries: number; rev
         <YAxis {...axisProps} allowDecimals={false} />
         <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(15,118,110,0.06)' }} />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Bar dataKey="entries" name="Entries" fill="#0d9488" radius={[6, 6, 0, 0]} maxBarSize={36} />
+        <Bar dataKey="entries" name="Entrées" fill="#0d9488" radius={[6, 6, 0, 0]} maxBarSize={36} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -77,7 +77,7 @@ export function RevenueChart({ data }: { data: { day: string; entries: number; r
         <Line
           type="monotone"
           dataKey="revenue"
-          name="Revenue"
+          name="Recettes"
           stroke="#f59e0b"
           strokeWidth={2.5}
           dot={{ r: 3.5, fill: '#f59e0b', strokeWidth: 2, stroke: '#fff' }}
@@ -130,7 +130,7 @@ export function SimplePieChart({
           className="fill-slate-400"
           style={{ fontFamily: 'Inter', fontSize: 11 }}
         >
-          entries
+          entrées
         </text>
       </PieChart>
     </ResponsiveContainer>
@@ -150,7 +150,7 @@ export function AgentsBarChart({
         <YAxis {...axisProps} allowDecimals={false} />
         <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(124,58,237,0.06)' }} />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Bar dataKey="entries" name="Entries" fill="#8b5cf6" radius={[6, 6, 0, 0]} maxBarSize={36} />
+        <Bar dataKey="entries" name="Entrées" fill="#8b5cf6" radius={[6, 6, 0, 0]} maxBarSize={36} />
       </BarChart>
     </ResponsiveContainer>
   );

@@ -16,10 +16,10 @@ import { Input } from '../components/ui/Input';
 import { isApiError } from '../types';
 
 const features = [
-  { icon: DoorOpen, title: 'Modern entrance tracking', text: 'Men & women sections, adult & child tariffs in one tap.' },
-  { icon: ReceiptText, title: 'Pricing that respects history', text: 'Price updates apply only to new visits — past entries stay intact.' },
-  { icon: BarChart3, title: 'Reports that pay for themselves', text: 'Daily, weekly and monthly revenue insights for your hammam.' },
-  { icon: Users, title: 'Team-ready roles', text: 'Admins and receptionists, each with their own workspace.' },
+  { icon: DoorOpen, title: 'Suivi moderne des entrées', text: "Sections hommes et femmes, tarifs adultes et enfants en un geste." },
+  { icon: ReceiptText, title: 'Des tarifs qui respectent le passé', text: "Une modification de tarif ne s'applique qu'aux nouvelles visites — les entrées passées restent intactes." },
+  { icon: BarChart3, title: "Des rapports qui valent de l'or", text: 'Recettes quotidiennes, hebdomadaires et mensuelles de votre hammam.' },
+  { icon: Users, title: "Des rôles pour toute l'équipe", text: 'Administrateurs et réceptionnistes, chacun avec son espace de travail.' },
 ];
 
 export function LoginPage() {
@@ -50,7 +50,7 @@ export function LoginPage() {
       if (isApiError(err)) {
         setError(err.message);
       } else {
-        setError('Unable to connect to the server.');
+        setError('Impossible de contacter le serveur.');
       }
     } finally {
       setSubmitting(false);
@@ -75,21 +75,21 @@ export function LoginPage() {
           </div>
           <div>
             <p className="font-display text-lg font-extrabold text-white">Hammam Manager</p>
-            <p className="text-xs font-medium text-teal-200/70">Moroccan Hammam Management System</p>
+            <p className="text-xs font-medium text-teal-200/70">Système de gestion d'un hammam marocain</p>
           </div>
         </div>
 
         <div className="relative max-w-md">
           <p className="inline-flex items-center gap-1.5 rounded-full border border-teal-400/20 bg-teal-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-teal-200">
             <Sparkles className="h-3.5 w-3.5" aria-hidden />
-            Daily operations, beautifully simple
+            Au quotidien, tout simplement
           </p>
           <h1 className="font-display mt-5 text-4xl font-extrabold leading-tight tracking-tight text-white xl:text-[2.75rem]">
-            The modern way to run a <span className="text-teal-300">Moroccan hammam</span>.
+            La façon moderne de gérer un <span className="text-teal-300">hammam marocain</span>.
           </h1>
           <p className="mt-4 text-[15px] leading-relaxed text-teal-100/70">
-            Entrances, pricing, staff and revenue — all in one place, designed for
-            the rhythm of a real hammam day.
+            Entrées, tarifs, équipe et recettes — le tout au même endroit, pensé pour
+            le rythme d'une vraie journée de hammam.
           </p>
           <ul className="mt-8 space-y-4">
             {features.map((feature) => (
@@ -124,14 +124,14 @@ export function LoginPage() {
               <Droplets aria-hidden className="h-6 w-6" />
             </div>
             <h2 className="font-display mt-5 text-2xl font-extrabold tracking-tight text-slate-900">
-              Welcome back
+              Bon retour
             </h2>
-            <p className="mt-1 text-sm text-slate-500">Sign in to your workspace to continue.</p>
+            <p className="mt-1 text-sm text-slate-500">Connectez-vous pour continuer.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Email address"
+              label="Adresse e-mail"
               type="email"
               autoComplete="email"
               value={email}
@@ -141,7 +141,7 @@ export function LoginPage() {
             />
             <div className="relative">
             <Input
-              label="Password"
+              label="Mot de passe"
               type={showPassword ? 'text' : 'password'}
               autoComplete="current-password"
               value={password}
@@ -170,12 +170,12 @@ export function LoginPage() {
             )}
 
             <Button type="submit" size="xl" fullWidth loading={submitting}>
-              Sign in
+              Se connecter
             </Button>
           </form>
 
           <p className="mt-8 text-center text-xs leading-relaxed text-slate-400">
-            Restricted access — only authorized staff can sign in.
+            Accès réservé au personnel autorisé.
             <br />
             © {new Date().getFullYear()} Hammam Manager
           </p>

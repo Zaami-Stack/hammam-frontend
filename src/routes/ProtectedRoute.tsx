@@ -11,7 +11,7 @@ export function ProtectedRoute({ allowedRole }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <LoadingSpinner label="Checking session..." />;
+    return <LoadingSpinner label="Vérification de la session..." />;
   }
 
   if (!user) {

@@ -28,7 +28,7 @@ export function PaginationBar({ pagination, onPageChange }: PaginationBarProps) 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-5 py-3.5">
       <p className="text-xs text-slate-500">
-        Showing page {page} of {totalPages} · {total} total
+        Page {page} sur {totalPages} · {total} au total
       </p>
       {totalPages > 1 && (
         <nav className="flex items-center gap-1" aria-label="Pagination">
@@ -37,7 +37,7 @@ export function PaginationBar({ pagination, onPageChange }: PaginationBarProps) 
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1}
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Previous page"
+            aria-label="Page précédente"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -68,7 +68,7 @@ export function PaginationBar({ pagination, onPageChange }: PaginationBarProps) 
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages}
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Next page"
+            aria-label="Page suivante"
           >
             <ChevronRight className="h-4 w-4" />
           </button>

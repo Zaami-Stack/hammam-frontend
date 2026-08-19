@@ -23,6 +23,7 @@ import {
   shiftCasablancaDay,
   todayCasablanca,
   yearCasablanca,
+  frName,
 } from '../../utils/format';
 import { Entry } from '../../types';
 import { cn } from '../../utils/cn';
@@ -30,12 +31,12 @@ import { cn } from '../../utils/cn';
 type PeriodPreset = 'today' | 'yesterday' | 'this_week' | 'this_month' | 'this_year' | 'custom';
 
 const periodPresets: { value: PeriodPreset; label: string }[] = [
-  { value: 'today', label: 'Today' },
-  { value: 'yesterday', label: 'Yesterday' },
-  { value: 'this_week', label: 'This week' },
-  { value: 'this_month', label: 'This month' },
-  { value: 'this_year', label: 'This year' },
-  { value: 'custom', label: 'Custom' },
+  { value: 'today', label: "Aujourd'hui" },
+  { value: 'yesterday', label: 'Hier' },
+  { value: 'this_week', label: 'Cette semaine' },
+  { value: 'this_month', label: 'Ce mois-ci' },
+  { value: 'this_year', label: "Cette année" },
+  { value: 'custom', label: 'Personnalisée' },
 ];
 
 function presetRange(period: PeriodPreset): { from: string; to: string } {
@@ -137,10 +138,10 @@ export function AdminEntriesPage() {
     },
     {
       key: 'hammam_name',
-      header: 'Hammam',
-      render: (row) => <Badge tone={row.hammam_name === 'Men' ? 'blue' : 'violet'}>{row.hammam_name}</Badge>,
+      header: 'Secteur',
+      render: (row) => <Badge tone={row.hammam_name === 'Men' ? 'blue' : 'violet'}>{frName(row.hammam_name)}</Badge>,
     },
-    { key: 'category_name', header: 'Category' },
+    { key: 'category_name', header: 'Catégorie' },
     {
       key: 'price',
       header: 'Price',
@@ -155,15 +156,15 @@ export function AdminEntriesPage() {
   return (
     <div>
       <PageHeader
-        title="Entrance History"
-        description="All visitor entrances across the business"
+        title="Historique des entrées"
+        description="Toutes les entrées de visiteurs de l'établissement"
       />
 
       <Card className="mb-4" padding={false}>
         <div className="flex flex-wrap items-end gap-3 p-4">
           <div className="flex w-full items-center gap-2">
             <Filter className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
-            <span className="shrink-0 text-sm font-semibold text-slate-700">Filters</span>
+            <span className="shrink-0 text-sm font-semibold text-slate-700">Filtres</span>
             <div className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1">
               {periodPresets.map((preset) => (
                 <button
@@ -197,28 +198,28 @@ export function AdminEntriesPage() {
         <div className="flex flex-wrap items-end gap-3 border-t border-slate-100 px-4 py-3">
           <CalendarDays className="hidden h-4 w-4 shrink-0 text-slate-400 sm:block" aria-hidden />
           <Select
-            label="Hammam"
+            label="Secteur"
             value={filters.hammamId}
             onChange={(event) => applyFilter({ hammamId: event.target.value })}
             className="w-full sm:w-36"
           >
-            <option value="">All</option>
+            <option value="">Tous</option>
             {(hammams ?? []).map((hammam) => (
               <option key={hammam.id} value={hammam.id}>
-                {hammam.name}
+                {frName(hammam.name)}
               </option>
             ))}
           </Select>
           <Select
-            label="Category"
+            label="Catégorie"
             value={filters.categoryId}
             onChange={(event) => applyFilter({ categoryId: event.target.value })}
             className="w-full sm:w-36"
           >
-            <option value="">All</option>
+            <option value="">Tous</option>
             {(categories ?? []).map((category) => (
               <option key={category.id} value={category.id}>
-                {category.name}
+                {frName(category.name)}
               </option>
             ))}
           </Select>
@@ -228,7 +229,7 @@ export function AdminEntriesPage() {
             onChange={(event) => applyFilter({ userId: event.target.value })}
             className="w-full sm:w-40"
           >
-            <option value="">All</option>
+            <option value="">Tous</option>
             {(users?.data ?? []).map((user) => (
               <option key={user.id} value={user.id}>
                 {user.name}
@@ -237,24 +238,24 @@ export function AdminEntriesPage() {
           </Select>
           {hasFilters && (
             <Button variant="ghost" size="md" onClick={clearFilters}>
-              Clear
+              Effacer
             </Button>
           )}
         </div>
       </Card>
 
       <Card padding={false}>
-        {entries.loading && <LoadingSpinner label="Loading entries..." />}
+        {entries.loading && <LoadingSpinner label="Chargement des entrées..." />}
         {entries.error && <ErrorMessage error={entries.error} onRetry={entries.reload} />}
         {entries.data && (
           <>
             {entries.data.data.length === 0 ? (
               <EmptyState
-                title="No entries found"
+                title="Aucune entrée trouvée"
                 description={
                   hasFilters
-                    ? 'Try adjusting or clearing the filters to see more results.'
-                    : 'Entrances registered by reception agents will appear here.'
+                    ? "Essayez de modifier ou d'effacer les filtres pour voir plus de résultats."
+                    : 'Les entrées enregistrées par les agents de réception apparaîtront ici.'
                 }
               />
             ) : (

@@ -28,18 +28,18 @@ interface NavItem {
 }
 
 const adminNav: NavItem[] = [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/admin/new-entry', label: 'New Entrance', icon: PlusCircle },
-  { to: '/admin/entries', label: 'Entrances', icon: DoorOpen },
-  { to: '/admin/users', label: 'Users', icon: Users },
-  { to: '/admin/prices', label: 'Prices', icon: Tags },
-  { to: '/admin/reports', label: 'Reports', icon: BarChart3 },
+{ to: '/admin/dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
+    { to: '/admin/new-entry', label: 'Nouvelle entrée', icon: PlusCircle },
+    { to: '/admin/entries', label: 'Entrées', icon: DoorOpen },
+    { to: '/admin/users', label: 'Utilisateurs', icon: Users },
+    { to: '/admin/prices', label: 'Tarifs', icon: Tags },
+    { to: '/admin/reports', label: 'Rapports', icon: BarChart3 },
 ];
 
 const receptionNav: NavItem[] = [
-  { to: '/reception/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/reception/new-entry', label: 'New Entrance', icon: PlusCircle },
-  { to: '/reception/my-entries', label: 'My Entries', icon: DoorOpen },
+    { to: '/reception/dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
+    { to: '/reception/new-entry', label: 'Nouvelle entrée', icon: PlusCircle },
+    { to: '/reception/my-entries', label: 'Mes entrées', icon: DoorOpen },
 ];
 
 function BrandMark({ className }: { className?: string }) {
@@ -64,7 +64,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
   const handleLogout = async () => {
     await logout();
-    toast.success('Logged out');
+    toast.success('Déconnexion réussie');
     navigate('/login', { replace: true });
   };
 
@@ -74,7 +74,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <BrandMark className="h-11 w-11" />
         <div className="min-w-0">
           <p className="font-display truncate text-[15px] font-bold text-white">Hammam Manager</p>
-          <p className="truncate text-[11px] font-medium text-teal-200/70">Moroccan Management System</p>
+          <p className="truncate text-[11px] font-medium text-teal-200/70">Gestion de hammam marocain</p>
         </div>
       </div>
 
@@ -114,7 +114,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             size="sm"
             onClick={handleLogout}
             className="text-teal-100/70 hover:bg-white/10 hover:text-white"
-            aria-label="Logout"
+            aria-label="Se déconnecter"
           >
             <LogOut className="h-4 w-4" />
           </Button>
@@ -129,17 +129,17 @@ export function AppLayout({ children }: { children?: ReactNode }) {
   const { user } = useAuth();
 
   const pageLabel: Record<string, string> = {
-    '/admin/dashboard': 'Dashboard',
-    '/admin/new-entry': 'New Entrance',
-    '/admin/entries': 'Entrances',
-    '/admin/users': 'Users',
-    '/admin/prices': 'Prices',
-    '/admin/reports': 'Reports',
-    '/reception/dashboard': 'Dashboard',
-    '/reception/new-entry': 'New Entrance',
-    '/reception/my-entries': 'My Entries',
+    '/admin/dashboard': 'Tableau de bord',
+    '/admin/new-entry': 'Nouvelle entrée',
+    '/admin/entries': 'Entrées',
+    '/admin/users': 'Utilisateurs',
+    '/admin/prices': 'Tarifs',
+    '/admin/reports': 'Rapports',
+    '/reception/dashboard': 'Tableau de bord',
+    '/reception/new-entry': 'Nouvelle entrée',
+    '/reception/my-entries': 'Mes entrées',
   };
-  const currentLabel = pageLabel[window.location.pathname] ?? 'Operations';
+  const currentLabel = pageLabel[window.location.pathname] ?? 'Opérations';
 
   return (
     <div className="min-h-screen bg-sand-50">
@@ -161,7 +161,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
               type="button"
               onClick={() => setSidebarOpen(false)}
               className="absolute right-3 top-4 rounded-lg p-1.5 text-teal-100/70 transition-colors hover:bg-white/10 hover:text-white"
-              aria-label="Close menu"
+              aria-label="Fermer le menu"
             >
               <X className="h-5 w-5" />
             </button>
@@ -176,7 +176,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
             type="button"
             onClick={() => setSidebarOpen(true)}
             className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-colors hover:bg-slate-50 lg:hidden"
-            aria-label="Open menu"
+            aria-label="Ouvrir le menu"
           >
             <Menu className="h-4.5 w-4.5" />
           </button>
@@ -189,7 +189,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
           <div className="ml-auto flex items-center gap-2">
             <span className="hidden items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-[11px] font-semibold text-teal-700 sm:inline-flex">
               <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
-              {user?.role === 'ADMIN' ? 'Administrator' : 'Reception'}
+              {user?.role === 'ADMIN' ? 'Administrateur' : 'Réception'}
             </span>
           </div>
         </header>

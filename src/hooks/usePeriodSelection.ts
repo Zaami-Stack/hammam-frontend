@@ -43,12 +43,12 @@ export function usePeriodSelection(): {
 }
 
 export const periodOptions: { value: DashboardPeriod; label: string }[] = [
-  { value: 'today', label: 'Today' },
-  { value: 'yesterday', label: 'Yesterday' },
-  { value: 'this_week', label: 'This week' },
-  { value: 'this_month', label: 'This month' },
-  { value: 'this_year', label: 'This year' },
-  { value: 'custom', label: 'Custom' },
+  { value: 'today', label: "Aujourd'hui" },
+  { value: 'yesterday', label: 'Hier' },
+  { value: 'this_week', label: 'Cette semaine' },
+  { value: 'this_month', label: 'Ce mois-ci' },
+  { value: 'this_year', label: "Cette année" },
+  { value: 'custom', label: 'Personnalisée' },
 ];
 
 export { todayCasablanca, monthCasablanca, yearCasablanca };
