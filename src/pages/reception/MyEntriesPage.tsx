@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useAsync } from '../../hooks/useAsync';
 import { entriesService } from '../../services/entries.service';
 import { PageHeader } from '../../components/ui/PageHeader';
@@ -16,9 +16,7 @@ export function MyEntriesPage() {
   const [page, setPage] = useState(1);
   const [today] = useState(() => todayCasablanca());
 
-  const entries = useAsync(
-    useCallback(() => entriesService.list({ page, limit: 25 }), [page])
-  );
+  const entries = useAsync(() => entriesService.list({ page, limit: 25 }), [page]);
 
   const columns: Column<Entry>[] = [
     {

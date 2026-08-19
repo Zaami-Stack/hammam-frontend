@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { KeyRound, Pencil, Plus, Search, ShieldCheck, ShieldOff, UserPlus } from 'lucide-react';
 import { useAsync } from '../../hooks/useAsync';
 import { useForm } from '../../hooks/useForm';
@@ -38,17 +38,15 @@ export function AdminUsersPage() {
   const [passwordTarget, setPasswordTarget] = useState<User | null>(null);
 
   const users = useAsync(
-    useCallback(
-      () =>
-        usersService.list({
-          page: filters.page,
-          limit: filters.limit,
-          search: filters.search || undefined,
-          role: (filters.role || undefined) as Role | undefined,
-          status: (filters.status || undefined) as 'active' | 'inactive' | undefined,
-        }),
-      [filters.page, filters.limit, filters.search, filters.role, filters.status]
-    )
+    () =>
+      usersService.list({
+        page: filters.page,
+        limit: filters.limit,
+        search: filters.search || undefined,
+        role: (filters.role || undefined) as Role | undefined,
+        status: (filters.status || undefined) as 'active' | 'inactive' | undefined,
+      }),
+    [filters.page, filters.limit, filters.search, filters.role, filters.status]
   );
 
   const applyFilter = (patch: Partial<UserFilters>) =>
@@ -126,8 +124,8 @@ export function AdminUsersPage() {
 
       <Card className="mb-4" padding={false}>
         <div className="flex flex-wrap items-end gap-3 p-4">
-          <div className="flex min-w-52 flex-1 gap-2">
-            <div className="relative flex-1">
+          <div className="flex w-full flex-1 gap-2">
+            <div className="relative w-full sm:min-w-52 sm:flex-1">
               <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               <input
                 type="search"
@@ -142,7 +140,7 @@ export function AdminUsersPage() {
             label="Role"
             value={filters.role}
             onChange={(event) => applyFilter({ role: event.target.value })}
-            className="w-36"
+            className="w-full sm:w-36"
           >
             <option value="">All</option>
             <option value="ADMIN">Admin</option>
@@ -152,7 +150,7 @@ export function AdminUsersPage() {
             label="Status"
             value={filters.status}
             onChange={(event) => applyFilter({ status: event.target.value })}
-            className="w-36"
+            className="w-full sm:w-36"
           >
             <option value="">All</option>
             <option value="active">Active</option>

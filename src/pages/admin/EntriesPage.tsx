@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { CalendarDays, Filter } from 'lucide-react';
 import { useAsync } from '../../hooks/useAsync';
 import { entriesService } from '../../services/entries.service';
@@ -82,31 +82,29 @@ export function AdminEntriesPage() {
   const [filters, setFilters] = useState<Filters>(initialFilters);
 
   const entries = useAsync(
-    useCallback(
-      () =>
-        entriesService.list({
-          page: filters.page,
-          limit: filters.limit,
-          from: filters.from || undefined,
-          to: filters.to || undefined,
-          hammamId: filters.hammamId ? Number(filters.hammamId) : undefined,
-          categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
-          userId: filters.userId ? Number(filters.userId) : undefined,
-        }),
-      [
-        filters.page,
-        filters.limit,
-        filters.from,
-        filters.to,
-        filters.hammamId,
-        filters.categoryId,
-        filters.userId,
-      ]
-    )
+    () =>
+      entriesService.list({
+        page: filters.page,
+        limit: filters.limit,
+        from: filters.from || undefined,
+        to: filters.to || undefined,
+        hammamId: filters.hammamId ? Number(filters.hammamId) : undefined,
+        categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
+        userId: filters.userId ? Number(filters.userId) : undefined,
+      }),
+    [
+      filters.page,
+      filters.limit,
+      filters.from,
+      filters.to,
+      filters.hammamId,
+      filters.categoryId,
+      filters.userId,
+    ]
   );
 
   const meta = useAsync(
-    useCallback(() => Promise.all([metaService.hammams(), metaService.categories(), usersService.list({ limit: 100 })]), []),
+    () => Promise.all([metaService.hammams(), metaService.categories(), usersService.list({ limit: 100 })]),
     []
   );
 
@@ -163,10 +161,10 @@ export function AdminEntriesPage() {
 
       <Card className="mb-4" padding={false}>
         <div className="flex flex-wrap items-end gap-3 p-4">
-          <div className="flex w-full items-center gap-2">
-            <Filter className="h-4 w-4 text-slate-400" aria-hidden />
+          <div className="flex w-full flex-wrap items-center gap-2">
+            <Filter className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
             <span className="text-sm font-semibold text-slate-700">Filters</span>
-            <div className="ml-2 flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {periodPresets.map((preset) => (
                 <button
                   key={preset.value}
@@ -186,7 +184,7 @@ export function AdminEntriesPage() {
             </div>
           </div>
           {filters.period === 'custom' && (
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap">
               <DateRangePicker
                 from={filters.from}
                 to={filters.to}
@@ -197,12 +195,12 @@ export function AdminEntriesPage() {
           )}
         </div>
         <div className="flex flex-wrap items-end gap-3 border-t border-slate-100 px-4 py-3">
-          <CalendarDays className="h-4 w-4 text-slate-400" aria-hidden />
+          <CalendarDays className="hidden h-4 w-4 shrink-0 text-slate-400 sm:block" aria-hidden />
           <Select
             label="Hammam"
             value={filters.hammamId}
             onChange={(event) => applyFilter({ hammamId: event.target.value })}
-            className="w-36"
+            className="w-full sm:w-36"
           >
             <option value="">All</option>
             {(hammams ?? []).map((hammam) => (
@@ -215,7 +213,7 @@ export function AdminEntriesPage() {
             label="Category"
             value={filters.categoryId}
             onChange={(event) => applyFilter({ categoryId: event.target.value })}
-            className="w-36"
+            className="w-full sm:w-36"
           >
             <option value="">All</option>
             {(categories ?? []).map((category) => (
@@ -228,7 +226,7 @@ export function AdminEntriesPage() {
             label="Agent"
             value={filters.userId}
             onChange={(event) => applyFilter({ userId: event.target.value })}
-            className="w-40"
+            className="w-full sm:w-40"
           >
             <option value="">All</option>
             {(users?.data ?? []).map((user) => (
