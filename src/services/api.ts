@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { ApiError } from '../types';
 
-const baseURL = (import.meta.env.VITE_API_URL as string | undefined) || '/api';
+const baseURL = '/api';
 
 const http = axios.create({
   baseURL,

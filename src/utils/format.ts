@@ -96,7 +96,8 @@ export function shiftCasablancaDay(date: string, days: number): string {
 }
 
 export function weekdayLabel(day: string): string {
-  const [y, m, d] = day.split('-').map(Number);
+  const [y, m, d] = day.slice(0, 10).split('-').map(Number);
+  if (!y || !m || !d) return day;
   return new Intl.DateTimeFormat('en-GB', {
     timeZone: CASABLANCA,
     weekday: 'short',

@@ -1,3 +1,6 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://hammam-api-cf40.onbelmo.uk/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
