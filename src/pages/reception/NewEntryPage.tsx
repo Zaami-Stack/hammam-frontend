@@ -1,171 +1,302 @@
-import { useMemo, useState } from 'react';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CheckCircle2, Loader2, RefreshCw, UserRound, UserRoundCheck } from 'lucide-react';
 import { useAsync } from '../../hooks/useAsync';
 import { entriesService } from '../../services/entries.service';
 import { metaService, pricesService } from '../../services/prices.service';
 import { useToast } from '../../context/ToastContext';
 import { PageHeader } from '../../components/ui/PageHeader';
-import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { ErrorMessage } from '../../components/ui/ErrorMessage';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
-import { formatCurrency } from '../../utils/format';
+import { formatCurrency, formatTime } from '../../utils/format';
 import { cn } from '../../utils/cn';
-import { isApiError } from '../../types';
+import { isApiError, PriceRow } from '../../types';
 
-type Step = 'hammam' | 'category' | 'confirm';
+interface Selection {
+  hammamId: number;
+  categoryId: number;
+  hammamName: string;
+  categoryName: string;
+  price: number;
+}
+
+const PRICE_REFRESH_MS = 60_000;
 
 export function NewEntryPage() {
   const toast = useToast();
   const meta = useAsync(
-    () => metaService.hammams().then((hammams) => metaService.categories().then((categories) => [hammams, categories] as const)),
+    () =>
+      metaService
+        .hammams()
+        .then((hammams) =>
+          metaService.categories().then((categories) => [hammams, categories] as const)
+        ),
     []
   );
   const prices = useAsync(() => pricesService.prices(), []);
 
-  const [hammamId, setHammamId] = useState<number | null>(null);
-  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [selection, setSelection] = useState<Selection | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [lastEntry, setLastEntry] = useState<string | null>(null);
+  const [lastEntry, setLastEntry] = useState<{ id: number; label: string; time: string } | null>(null);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => prices.reload(), PRICE_REFRESH_MS);
+    return () => window.clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prices.reload]);
 
   const [hammams, categories] = meta.data ?? [[], []];
 
-  const currentPrice = useMemo(() => {
-    if (hammamId === null || categoryId === null || !prices.data) return null;
-    return prices.data.find(
-      (price) => price.hammam_id === hammamId && price.category_id === categoryId
-    );
-  }, [hammamId, categoryId, prices.data]);
+  const priceFor = useCallback(
+    (hammamId: number, categoryId: number): number | null => {
+      const row = (prices.data ?? []).find(
+        (price) => price.hammam_id === hammamId && price.category_id === categoryId
+      );
+      return row ? row.price : null;
+    },
+    [prices.data]
+  );
 
-  const step: Step = hammamId === null ? 'hammam' : categoryId === null ? 'category' : 'confirm';
+  const price = useMemo(() => {
+    if (!selection) return null;
+    return priceFor(selection.hammamId, selection.categoryId);
+  }, [selection, priceFor]);
 
-  const canRegister = hammamId !== null && categoryId !== null && currentPrice !== null;
+  const tiles = useMemo(() => {
+    if (!meta.data || !prices.data) return [];
+    const rows: {
+      hammamId: number;
+      hammamName: string;
+      categoryId: number;
+      categoryName: string;
+      price: PriceRow['price'];
+    }[] = [];
+    for (const hammam of hammams) {
+      for (const category of categories) {
+        const priceRow = prices.data.find(
+          (p) => p.hammam_id === hammam.id && p.category_id === category.id
+        );
+        if (!priceRow) continue;
+        rows.push({
+          hammamId: hammam.id,
+          hammamName: hammam.name,
+          categoryId: category.id,
+          categoryName: category.name,
+          price: priceRow.price,
+        });
+      }
+    }
+    return rows;
+  }, [meta.data, prices.data, hammams, categories]);
 
-  const reset = () => {
-    setHammamId(null);
-    setCategoryId(null);
+  const groups: Record<'Men' | 'Women', (typeof tiles)[number][]> = useMemo(() => {
+    const men = tiles.filter((t) => t.hammamName === 'Men');
+    const women = tiles.filter((t) => t.hammamName === 'Women');
+    return { Men: men, Women: women };
+  }, [tiles]);
+
+  const isSelected = (hammamId: number, categoryId: number) =>
+    !!selection && selection.hammamId === hammamId && selection.categoryId === categoryId;
+
+  const select = (tile: (typeof tiles)[number]) => {
+    setSelection({
+      hammamId: tile.hammamId,
+      categoryId: tile.categoryId,
+      hammamName: tile.hammamName,
+      categoryName: tile.categoryName,
+      price: tile.price,
+    });
   };
 
-  const register = async () => {
-    if (!canRegister || hammamId === null || categoryId === null) return;
+  const confirmEntry = async () => {
+    if (!selection) return;
     setSubmitting(true);
     try {
-      const entry = await entriesService.create({ hammamId, categoryId });
-      toast.success(
-        `${entry.hammam_name} / ${entry.category_name} registered for ${formatCurrency(entry.price)}`
-      );
-      setLastEntry(`#${entry.id}`);
-      reset();
+      const entry = await entriesService.create({ hammamId: selection.hammamId, categoryId: selection.categoryId });
+      toast.success(`Entry #${entry.id} recorded · ${entry.hammam_name} / ${entry.category_name} · ${formatCurrency(entry.price)}`);
+      setLastEntry({
+        id: entry.id,
+        label: `${entry.hammam_name} · ${entry.category_name} · ${formatCurrency(entry.price)}`,
+        time: formatTime(entry.created_at),
+      });
+      setSelection(null);
     } catch (err) {
-      toast.error(isApiError(err) ? err.message : 'Unable to register entrance');
+      toast.error(isApiError(err) ? err.message : 'Unable to record the entrance');
     } finally {
       setSubmitting(false);
     }
   };
 
+  const loading = meta.loading || (meta.data && prices.loading);
+
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-3xl">
       <PageHeader
-        title="New Entrance"
-        description="Register a visitor in a few taps. The system sets the price automatically."
+        title="Record Entry"
+        description="Tap a category to record the visitor — the system applies the current price automatically."
       />
 
-      {meta.loading && <LoadingSpinner label="Loading reception setup..." />}
+      {loading && <LoadingSpinner label="Loading entry options..." />}
       {meta.error && <ErrorMessage error={meta.error} onRetry={meta.reload} />}
 
-      {meta.data && (
-        <div className="space-y-5">
+      {!loading && !meta.error && (
+        <>
           {lastEntry && (
-            <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
-              <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden />
-              Entrance {lastEntry} registered successfully.
-              <button type="button" className="ml-auto text-xs font-semibold underline" onClick={() => setLastEntry(null)}>
+            <div className="animate-fade-up mb-5 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 px-4 py-3.5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+                <CheckCircle2 className="h-5 w-5" aria-hidden />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-bold text-emerald-900">
+                  Entry #{lastEntry.id} recorded
+                </p>
+                <p className="truncate text-xs text-emerald-700">
+                  {lastEntry.label} · {lastEntry.time} — ready for the next visitor
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setLastEntry(null)}
+                className="rounded-lg px-2 py-1 text-xs font-semibold text-emerald-700 underline-offset-2 hover:underline"
+              >
                 Dismiss
               </button>
             </div>
           )}
 
-          <Card title="1. Select the area" subtitle="Where is the visitor entering?">
-            <div className="grid grid-cols-2 gap-3">
-              {(hammams.filter((h) => h.id <= 2)).map((hammam) => (
-                <button
-                  key={hammam.id}
-                  type="button"
-                  onClick={() => setHammamId(hammam.id)}
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <p className="text-xs font-medium text-slate-500">
+              Prices load from the system and refresh automatically.
+            </p>
+            <button
+              type="button"
+              onClick={prices.reload}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
+            >
+              <RefreshCw className={cn('h-3.5 w-3.5', prices.loading && 'animate-spin')} aria-hidden />
+              Refresh prices
+            </button>
+          </div>
+
+          <div className="space-y-8">
+            {(['Men', 'Women'] as const).map((name) => {
+              const isMen = name === 'Men';
+              return (
+                <section
+                  key={name}
                   className={cn(
-                    'rounded-xl border-2 p-6 text-center transition-all',
-                    hammamId === hammam.id
-                      ? 'border-teal-600 bg-teal-50 shadow-sm'
-                      : 'border-slate-200 bg-white hover:border-teal-400'
+                    'rounded-2xl border bg-white p-5 shadow-sm shadow-slate-900/[0.04] sm:p-6',
+                    isMen
+                      ? 'border-blue-200/80 ring-1 ring-inset ring-blue-100/60'
+                      : 'border-violet-200/80 ring-1 ring-inset ring-violet-100/60'
                   )}
                 >
-                  <span className="block text-3xl" aria-hidden>{hammam.name === 'Men' ? '🔵' : '🟣'}</span>
-                  <span className="mt-2 block text-lg font-bold text-slate-900">{hammam.name}</span>
-                  <span className="mt-1 block text-sm text-teal-700">
-                    {hammam.name === 'Men' ? 'Male area' : 'Female area'}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </Card>
+                  <header className="mb-4 flex items-center gap-3">
+                    <span
+                      className={cn(
+                        'flex h-11 w-11 items-center justify-center rounded-xl text-white shadow-sm',
+                        isMen
+                          ? 'bg-gradient-to-br from-blue-500 to-blue-700'
+                          : 'bg-gradient-to-br from-violet-500 to-violet-700'
+                      )}
+                    >
+                      {isMen ? <UserRound className="h-5 w-5" aria-hidden /> : <UserRoundCheck className="h-5 w-5" aria-hidden />}
+                    </span>
+                    <div>
+                      <h2 className="font-display text-xl font-extrabold tracking-tight text-slate-900">
+                        {name.toUpperCase()}
+                      </h2>
+                      <p className="text-xs font-medium text-slate-500">
+                        {isMen ? 'Male section' : 'Female section'}
+                      </p>
+                    </div>
+                  </header>
 
-          {step !== 'hammam' && (
-            <Card title="2. Select the category">
-              <div className="grid grid-cols-2 gap-3">
-                {(categories ?? []).map((category) => (
-                  <button
-                    key={category.id}
-                    type="button"
-                    onClick={() => setCategoryId(category.id)}
-                    className={cn(
-                      'rounded-xl border-2 p-6 text-center transition-all',
-                      categoryId === category.id
-                        ? 'border-teal-600 bg-teal-50 shadow-sm'
-                        : 'border-slate-200 bg-white hover:border-teal-400'
-                    )}
-                  >
-                    <span className="block text-3xl" aria-hidden>{category.name === 'Adult' ? '🧑' : '🧒'}</span>
-                    <span className="mt-2 block text-lg font-bold text-slate-900">{category.name}</span>
-                  </button>
-                ))}
-              </div>
-            </Card>
-          )}
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {groups[name].map((tile) => {
+                      const selected = isSelected(tile.hammamId, tile.categoryId);
+                      return (
+                        <button
+                          key={`${tile.hammamId}-${tile.categoryId}`}
+                          type="button"
+                          onClick={() => select(tile)}
+                          disabled={submitting}
+                          aria-pressed={selected}
+                          className={cn(
+                            'group relative flex items-center justify-between gap-3 rounded-2xl border-2 px-5 py-4 text-left transition-all duration-200',
+                            selected
+                              ? isMen
+                                ? 'border-blue-500 bg-blue-50 shadow-md shadow-blue-200/50'
+                                : 'border-violet-500 bg-violet-50 shadow-md shadow-violet-200/50'
+                              : 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md hover:shadow-slate-900/5',
+                            submitting && 'cursor-wait opacity-70'
+                          )}
+                        >
+                          <span>
+                            <span className="block text-base font-bold text-slate-900">
+                              {tile.categoryName}
+                            </span>
+                            <span className="mt-0.5 block text-xs font-medium text-slate-500">
+                              {tile.price === null ? 'Price unavailable' : formatCurrency(tile.price)}
+                            </span>
+                          </span>
+                          <span
+                            className={cn(
+                              'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all',
+                              selected
+                                ? isMen
+                                  ? 'border-blue-500 bg-blue-500 text-white'
+                                  : 'border-violet-500 bg-violet-500 text-white'
+                                : 'border-slate-200 text-slate-300 group-hover:border-slate-300'
+                            )}
+                          >
+                            {selected && <CheckCircle2 className="h-5 w-5" aria-hidden />}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
 
-          {step === 'confirm' && (
-            <Card title="3. Confirm">
-              <div className="flex flex-col items-center gap-4 py-4 text-center">
-                <div>
-                  <p className="text-sm text-slate-500">Price</p>
-                  <p className="text-4xl font-extrabold text-teal-700">
-                    {currentPrice ? formatCurrency(currentPrice.price) : '—'}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-400">
-                    Set by the system based on current rates
-                  </p>
+          <div
+            className={cn(
+              'sticky bottom-3 z-10 mt-6 rounded-2xl border bg-white/95 shadow-xl shadow-slate-900/10 backdrop-blur transition-all duration-300',
+              selection ? 'border-teal-300 opacity-100' : 'pointer-events-none border-slate-200 opacity-0'
+            )}
+            aria-live="polite"
+          >
+            <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 text-lg text-white shadow-sm">
+                  ♨
                 </div>
-                <Button
-                  size="xl"
-                  fullWidth
-                  onClick={register}
-                  disabled={!canRegister}
-                  loading={submitting}
-                >
-                  {submitting && <Loader2 className="h-5 w-5 animate-spin" aria-hidden />}
-                  Register entrance
-                </Button>
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="text-sm text-slate-500 underline-offset-2 hover:underline"
-                  disabled={submitting}
-                >
-                  Change selection
-                </button>
+                <div>
+                  <p className="text-sm font-semibold text-slate-700">
+                    {selection ? `${selection.hammamName} · ${selection.categoryName}` : '…'}
+                  </p>
+                  <p className="text-xs text-slate-500">Price applied at recording</p>
+                </div>
               </div>
-            </Card>
-          )}
-        </div>
+              <div className="flex items-center justify-end gap-3">
+                <span className="font-display text-2xl font-extrabold text-teal-700">
+                  {selection && price !== null ? formatCurrency(price) : '—'}
+                </span>
+                <div className="flex gap-2">
+                  <Button variant="secondary" onClick={() => setSelection(null)} disabled={submitting}>
+                    Cancel
+                  </Button>
+                  <Button size="lg" onClick={confirmEntry} loading={submitting} disabled={!selection || price === null}>
+                    {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
+                    Confirm entry
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

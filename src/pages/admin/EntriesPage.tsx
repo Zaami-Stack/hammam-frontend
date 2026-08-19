@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Filter } from 'lucide-react';
+import { CalendarDays, Filter } from 'lucide-react';
 import { useAsync } from '../../hooks/useAsync';
 import { entriesService } from '../../services/entries.service';
 import { usersService } from '../../services/users.service';
@@ -15,12 +15,51 @@ import { Select } from '../../components/ui/Input';
 import { DateRangePicker } from '../../components/ui/DateRangePicker';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { formatCurrency, formatDateTime } from '../../utils/format';
+import {
+  formatCurrency,
+  formatDateTime,
+  mondayCasablanca,
+  monthCasablanca,
+  shiftCasablancaDay,
+  todayCasablanca,
+  yearCasablanca,
+} from '../../utils/format';
 import { Entry } from '../../types';
+import { cn } from '../../utils/cn';
+
+type PeriodPreset = 'today' | 'yesterday' | 'this_week' | 'this_month' | 'this_year' | 'custom';
+
+const periodPresets: { value: PeriodPreset; label: string }[] = [
+  { value: 'today', label: 'Today' },
+  { value: 'yesterday', label: 'Yesterday' },
+  { value: 'this_week', label: 'This week' },
+  { value: 'this_month', label: 'This month' },
+  { value: 'this_year', label: 'This year' },
+  { value: 'custom', label: 'Custom' },
+];
+
+function presetRange(period: PeriodPreset): { from: string; to: string } {
+  const today = todayCasablanca();
+  switch (period) {
+    case 'today':
+      return { from: today, to: today };
+    case 'yesterday':
+      return { from: shiftCasablancaDay(today, -1), to: shiftCasablancaDay(today, -1) };
+    case 'this_week':
+      return { from: mondayCasablanca(), to: today };
+    case 'this_month':
+      return { from: `${monthCasablanca()}-01`, to: today };
+    case 'this_year':
+      return { from: `${yearCasablanca()}-01-01`, to: today };
+    case 'custom':
+      return { from: '', to: '' };
+  }
+}
 
 interface Filters {
   page: number;
   limit: number;
+  period: PeriodPreset;
   from: string;
   to: string;
   hammamId: string;
@@ -31,8 +70,9 @@ interface Filters {
 const initialFilters: Filters = {
   page: 1,
   limit: 25,
-  from: '',
-  to: '',
+  period: 'today',
+  from: presetRange('today').from,
+  to: presetRange('today').to,
   hammamId: '',
   categoryId: '',
   userId: '',
@@ -71,10 +111,23 @@ export function AdminEntriesPage() {
   );
 
   const applyFilter = (patch: Partial<Filters>) => {
-    setFilters((current) => ({ ...current, ...patch, page: 1 }));
+    setFilters((current) => {
+      const next = { ...current, ...patch, page: 1 };
+      if (patch.period && patch.period !== 'custom') {
+        const range = presetRange(patch.period);
+        next.from = range.from;
+        next.to = range.to;
+      }
+      return next;
+    });
   };
 
-  const clearFilters = () => setFilters({ ...initialFilters });
+  const clearFilters = () =>
+    setFilters({
+      ...initialFilters,
+      from: presetRange('today').from,
+      to: presetRange('today').to,
+    });
 
   const [hammams, categories, users] = meta.data ?? [[], [], null];
 
@@ -99,7 +152,7 @@ export function AdminEntriesPage() {
   ];
 
   const hasFilters =
-    filters.from || filters.to || filters.hammamId || filters.categoryId || filters.userId;
+    filters.period !== 'today' || filters.hammamId || filters.categoryId || filters.userId;
 
   return (
     <div>
@@ -110,16 +163,41 @@ export function AdminEntriesPage() {
 
       <Card className="mb-4" padding={false}>
         <div className="flex flex-wrap items-end gap-3 p-4">
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center gap-2">
             <Filter className="h-4 w-4 text-slate-400" aria-hidden />
             <span className="text-sm font-semibold text-slate-700">Filters</span>
+            <div className="ml-2 flex flex-wrap gap-1.5">
+              {periodPresets.map((preset) => (
+                <button
+                  key={preset.value}
+                  type="button"
+                  onClick={() => applyFilter({ period: preset.value })}
+                  aria-pressed={filters.period === preset.value}
+                  className={cn(
+                    'rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors',
+                    filters.period === preset.value
+                      ? 'border-teal-600 bg-teal-600 text-white shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                  )}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <DateRangePicker
-            from={filters.from}
-            to={filters.to}
-            onFromChange={(from) => applyFilter({ from })}
-            onToChange={(to) => applyFilter({ to })}
-          />
+          {filters.period === 'custom' && (
+            <div className="flex items-center gap-2">
+              <DateRangePicker
+                from={filters.from}
+                to={filters.to}
+                onFromChange={(from) => applyFilter({ from, period: 'custom' })}
+                onToChange={(to) => applyFilter({ to, period: 'custom' })}
+              />
+            </div>
+          )}
+        </div>
+        <div className="flex flex-wrap items-end gap-3 border-t border-slate-100 px-4 py-3">
+          <CalendarDays className="h-4 w-4 text-slate-400" aria-hidden />
           <Select
             label="Hammam"
             value={filters.hammamId}

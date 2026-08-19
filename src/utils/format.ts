@@ -64,6 +64,37 @@ export function yearCasablanca(): string {
   return todayCasablanca().slice(0, 4);
 }
 
+const dayPartsFmt = new Intl.DateTimeFormat('en-US', {
+  timeZone: CASABLANCA,
+  weekday: 'short',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
+export function mondayCasablanca(): string {
+  const today = new Date();
+  const { weekday } = Object.fromEntries(
+    dayPartsFmt.formatToParts(today).map((p) => [p.type, p.value])
+  );
+  const dayNumber = todayCasablanca();
+  const dow = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(weekday ?? '');
+  const offsetDays = (dow <= 0 ? dow + 7 : dow) - 1;
+  const t = new Date(`${dayNumber}T12:00:00`);
+  t.setUTCDate(t.getUTCDate() - offsetDays);
+  return `${t.getUTCFullYear()}-${String(t.getUTCMonth() + 1).padStart(2, '0')}-${String(
+    t.getUTCDate()
+  ).padStart(2, '0')}`;
+}
+
+export function shiftCasablancaDay(date: string, days: number): string {
+  const t = new Date(`${date}T12:00:00`);
+  t.setUTCDate(t.getUTCDate() + days);
+  return `${t.getUTCFullYear()}-${String(t.getUTCMonth() + 1).padStart(2, '0')}-${String(
+    t.getUTCDate()
+  ).padStart(2, '0')}`;
+}
+
 export function weekdayLabel(day: string): string {
   const [y, m, d] = day.split('-').map(Number);
   return new Intl.DateTimeFormat('en-GB', {
